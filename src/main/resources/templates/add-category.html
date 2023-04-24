@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- css -->
+    <link
+      href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+      rel="stylesheet"
+      integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+      integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+      integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" th:href="@{/css/mercari.css}" />
+    <title>Rakus Items</title>
+  </head>
+  <body>
+    <!-- navbar -->
+    <nav class="navbar navbar-inverse">
+      <div class="navbar-header">
+        <button
+          type="button"
+          class="navbar-toggle collapsed"
+          data-toggle="collapse"
+          data-target="#navbar"
+          aria-expanded="false"
+          aria-controls="navbar"
+        >
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" th:href="@{/}">Rakus Items</a>
+      </div>
+      <div id="navbar" class="collapse navbar-collapse">
+        <div>
+          <ul class="nav navbar-nav navbar-right">
+            <li>
+              <a id="logout" href="./login.html"
+                >Logout&nbsp;<i class="fa fa-power-off"></i
+              ></a>
+            </li>
+          </ul>
+          <p class="navbar-text navbar-right">
+            <span id="loginName">user: userName</span>
+          </p>
+        </div>
+      </div>
+    </nav>
+
+    <!-- details -->
+    <div id="input-main" class="container">
+      <a type="button" class="btn btn-default" th:href="@{/back}"
+        ><i class="fa fa-reply"></i> back</a
+      >
+      <h2>Add</h2>
+
+      <!-- add form -->
+      <form
+        th:action="@{/add-category/insert}"
+        method="POST"
+        class="form-horizontal"
+        th:object="${addCategoryForm}"
+      >
+        <!-- 新規カテゴリ仮ID -->
+        <input
+          type="hidden"
+          id="tentative-category-id"
+          th:value="${tentativeCategoryId}"
+        />
+        <!-- 新規カテゴリ仮ID終了 -->
+        <!-- カテゴリ選択エリア -->
+        <div class="select-category-area">
+          <!-- 親カテゴリ選択リスト -->
+          <div class="form-group" id="select-parent-category-area">
+            <label for="parent-category-id" class="col-sm-2 control-label"
+              >category[parent]</label
+            >
+            <div class="col-sm-8">
+              <select
+                class="form-control"
+                id="parent-category-id"
+                name="parentCategoryId"
+                th:field="*{parentCategoryId}"
+              >
+                <option value="">-- parentCategory --</option>
+                <option th:value="${tentativeCategoryId}">
+                  -- 親カテゴリを追加 --
+                </option>
+                <div th:each="parentCategory : ${parentCategoryList}">
+                  <option
+                    th:text="${parentCategory.name}"
+                    th:value="${parentCategory.id}"
+                  >
+                    親カテゴリ名
+                  </option>
+                </div>
+              </select>
+              <div id="parent-category-id-message-area">
+                <div
+                  th:errors="*{parentCategoryId}"
+                  class="text-danger"
+                  id="parent-category-id-message"
+                >
+                  エラーメッセージ
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- 親カテゴリ選択リスト終了 -->
+          <!-- 子カテゴリ選択エリア -->
+          <div id="select-child-category-area">
+            <!-- 子カテゴリ選択リスト -->
+            <div
+              th:if="(*{parentCategoryId} != ${tentativeCategoryId}) and (*{parentCategoryId} != null)"
+              class="form-group"
+              id="select-child-category"
+            >
+              <label for="child-category-id" class="col-sm-2 control-label"
+                >category[child]</label
+              >
+              <div class="col-sm-8">
+                <select
+                  class="form-control"
+                  id="child-category-id"
+                  name="childCategoryId"
+                  th:field="*{childCategoryId}"
+                >
+                  <option value="">-- childCategory --</option>
+                  <option th:value="${tentativeCategoryId}">
+                    -- 子カテゴリを追加 --
+                  </option>
+                  <div th:each="childCategory : ${childCategoryList}">
+                    <option
+                      th:text="${childCategory.name}"
+                      th:value="${childCategory.id}"
+                    >
+                      子カテゴリ名
+                    </option>
+                  </div>
+                </select>
+                <div id="child-category-id-message-area">
+                  <div
+                    th:errors="*{childCategoryId}"
+                    class="text-danger"
+                    id="child-category-id-message"
+                  >
+                    エラーメッセージ
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- 新規親カテゴリ入力の場合 -->
+            <div
+              th:if="*{parentCategoryId} == ${tentativeCategoryId}"
+              id="select-child-category"
+            >
+              <input
+                type="hidden"
+                name="childCategoryId"
+                th:value="${tentativeCategoryId}"
+              />
+            </div>
+            <!-- 子カテゴリ選択リスト終了 -->
+          </div>
+          <!-- 子カテゴリ選択エリア終了 -->
+        </div>
+        <!-- カテゴリ選択エリア終了 -->
+        <!-- カテゴリ入力エリア -->
+        <div id="input-category-name-area">
+          <!-- 新規カテゴリ入力 -->
+          <div
+            th:if="*{categoryName}"
+            class="form-group"
+            id="input-category-name"
+          >
+            <label for="category-name" class="col-sm-2 control-label"
+              >新規カテゴリ名</label
+            >
+            <div class="col-sm-8">
+              <input
+                type="text"
+                class="form-control"
+                id="category-name"
+                name="categoryName"
+                th:field="*{categoryName}"
+              />
+              <div id="category-name-message-area">
+                <div
+                  th:errors="*{categoryName}"
+                  class="text-danger"
+                  id="category-name-message"
+                >
+                  エラーメッセージ
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- 新規カテゴリ入力終了 -->
+          <!-- カテゴリ新規入力終了 -->
+        </div>
+
+        <!-- submit button -->
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-10">
+            <button
+              type="submit"
+              class="btn btn-default"
+              id="submit-btn"
+              disabled
+            >
+              Submit
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+    <!-- script -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script
+      src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+      integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+      crossorigin="anonymous"
+    ></script>
+    <script th:src="@{/js/add_category.js}"></script>
+  </body>
+</html>

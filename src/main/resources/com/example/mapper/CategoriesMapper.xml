@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.CategoriesMapper">
+	<select id="findByLevel"
+		resultType="com.example.domain.Category">
+		SELECT
+		id,name
+		FROM
+		categories
+		WHERE
+		level = #{level}
+		ORDER BY
+		name
+	</select>
+
+	<select id="findByAncestorIdAndLevel"
+		resultType="com.example.domain.Category">
+		SELECT
+		id,name,level
+		FROM categories
+		WHERE
+		level = #{level}
+		<if
+			test="ancestorId != @com.example.common.NullValue@CATEGORY_ID.value">
+			AND
+			id IN (
+			SELECT
+			descendant_id
+			FROM category_tree_paths
+			WHERE
+			ancestor_id =
+			#{ancestorId}
+			)
+		</if>
+		ORDER BY
+		name
+	</select>
+
+	<select id="findByDescendantId"
+		resultType="com.example.domain.Category">
+		SELECT
+		id,name,level
+		FROM categories
+		WHERE
+		id IN (
+		SELECT
+		ancestor_id
+		FROM category_tree_paths
+		WHERE
+		descendant_id =
+		#{descendantId}
+		)
+		ORDER BY
+		level
+	</select>
+
+	<select id="checkCategoryNameDuplication" resultType="boolean">
+		SELECT
+		NOT EXISTS (
+		SELECT
+		1
+		FROM
+		categories
+		WHERE
+		level = #{level}
+		AND
+		name
+		ILIKE #{name}
+		<if test="ancestorId != null">
+			AND EXISTS (
+			SELECT descendant_id
+			FROM category_tree_paths
+			WHERE
+			ancestor_id = #{ancestorId}
+			)
+		</if>
+		) AS no_duplicate;
+	</select>
+
+	<select id="pickUpLevelById" resultType="int">
+		SELECT level
+		FROM
+		categories
+		WHERE id = #{id}
+	</select>
+
+	<select id="pickUpLatestCategoryId" resultType="int">
+		SELECT max(id)
+		FROM categories
+	</select>
+	
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO categories
+		(name,description,level,registered_date_time,registered_name,updated_date_time,updated_name)
+		VALUES
+		(#{category.name},#{category.description},#{category.level},now(),'登録者ユーザーID',now(),'登録者ユーザーID')
+		
+	</insert>
+
+
+</mapper>
