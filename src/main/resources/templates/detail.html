@@ -95,7 +95,11 @@
             </tr>
             <tr>
               <th>brand</th>
-              <td th:text="${item.brand}">ブランド名</td>
+              <td>
+                <span th:if="${item.brand}" th:text="${item.brand.name}"
+                  >ブランド名</span
+                >
+              </td>
             </tr>
             <tr>
               <th>condition</th>
