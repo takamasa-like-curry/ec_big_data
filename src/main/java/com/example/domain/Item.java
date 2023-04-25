@@ -21,8 +21,8 @@ public class Item {
 	private String name;
 	/** 商品状態 */
 	private int condition;
-	/** ブランド名 */
-	private String brand;
+	/** ブランド */
+	private Brand brand;
 	/** 価格 */
 	private double price;
 	/** 郵送方法(あってる？) */
