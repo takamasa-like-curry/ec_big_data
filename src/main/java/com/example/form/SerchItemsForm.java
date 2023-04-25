@@ -19,14 +19,16 @@ public class SerchItemsForm {
 	/** 孫カテゴリID */
 	private Integer grandChildCategoryId;
 	/** ブランド名 */
-	private String brand;
+	private String brandName;
+	/** ブランドID */
+	private Integer brandId;
 
 	public SerchItemsForm() {
-//		categoryIdIsNullValue();
+		
 	};
 
-	private SerchItemsForm(String brand) {
-		this.brand = brand;
+	private SerchItemsForm(Integer brandId) {
+		this.brandId = brandId;
 	}
 
 	private SerchItemsForm(List<Category> categoryList) {
@@ -46,8 +48,8 @@ public class SerchItemsForm {
 		}
 	}
 
-	public static SerchItemsForm createFormByBrand(String brand) {
-		return new SerchItemsForm(brand);
+	public static SerchItemsForm createFormByBrandId(Integer brandId) {
+		return new SerchItemsForm(brandId);
 
 	}
 
