@@ -9,50 +9,84 @@
 
 	<select id="load" resultMap="itemWithCategoryList">
 		SELECT
-		i.item_id
+		i.item_id as i_item_id
 		,i.name
-		,i.condition
-		,i.category_id
-		,i.brand
-		,i.price
-		,i.shipping
-		,i.description
-		,c.id
-		,c.name
-		,c.level
+		as i_name
+		,i.condition as i_condition
+		,i.category_id as i_category_id
+		,i.price as i_price
+		,i.shipping as i_shipping
+		,i.description as
+		i_description
+		,c.id as c_id
+		,c.name as c_name
+		,c.level as c_level
+		,b.id as
+		b_id
+		,b.name as b_name
 		FROM items as i
-		LEFT OUTER JOIN categories as c
+		LEFT OUTER JOIN categories AS c
 		ON
 		i.category_id
 		= c.id
+		LEFT OUTER JOIN brands AS b
+		ON
+		i.brand_id = b.id
 		WHERE
 		item_id =
 		#{itemId}
 	</select>
 
 	<resultMap type="com.example.domain.Item"
-		id="itemWithCategoryList" autoMapping="true">
+		id="itemWithCategoryList">
+		<result property="itemId" column="i_item_id" />
+		<result property="name" column="i_name" />
+		<result property="condition" column="i_condition" />
+		<result property="categoryId" column="i_category_id" />
+		<result property="price" column="i_price" />
+		<result property="shipping" column="i_shipping" />
+		<result property="description" column="i_description" />
+		<association property="brand"
+			javaType="com.example.domain.Brand">
+			<id property="id" column="b_id" />
+			<result property="name" column="b_name" />
+		</association>
 		<collection property="categoryList"
-			ofType="com.example.domain.Category" autoMapping="true">
+			ofType="com.example.domain.Category">
+			<id property="id" column="c_id" />
+			<result property="name" column="c_name" />
+			<result property="level" column="c_level" />
 		</collection>
+
 	</resultMap>
 
-	<select id="countTotalQuantity" resultType="int">
+	<select id="countTotalQuantity" resultType="int"
+		parameterType="map">
 		SELECT
 		COUNT(*)
 		FROM items
 		WHERE
 		1 = 1
-		<if test="name != null">
+		<if test="filter.name != null">
 			AND
-			name ILIKE CONCAT('%', #{name}, '%')
+			name ILIKE CONCAT('%', #{filter.name}, '%')
 		</if>
-		<if test="brand != null">
+		<if test="filter.brand.name != null">
 			AND
-			brand ILIKE CONCAT('%', #{brand}, '%')
+			brand_id IN (
+			SELECT id FROM brands
+			WHERE
+			name ILIKE
+			CONCAT('%', #{filter.brand.name}, '%')
+			)
 		</if>
 		<if
-			test="categoryId != @com.example.common.NullValue@CATEGORY_ID.value">
+			test="filter.brand.id != @com.example.common.NullValue@BRAND_ID.value">
+			AND
+			brand_id = #{filter.brand.id}
+		</if>
+		<if
+			test="filter.categoryId != @com.example.common.NullValue@CATEGORY_ID.value">
 			AND
 			category_id IN (
 			SELECT
@@ -60,34 +94,50 @@
 			FROM
 			category_tree_paths
 			WHERE
-			ancestor_id = #{categoryId}
+			ancestor_id = #{filter.categoryId}
 			)
 		</if>
 	</select>
 
-	<select id="findByFilter" resultType="com.example.domain.Item">
+	<select id="findByFilter" resultType="com.example.domain.Item"
+		resultMap="itemWithBrand" parameterType="map">
 		SELECT
-		item_id
-		,name
-		,condition
-		,category_id
-		,brand
-		,price
-		,shipping
-		,description
-		FROM items
+		i.item_id as i_item_id
+		,i.name as i_name
+		,i.condition as
+		i_condition
+		,i.category_id as i_category_id
+		,i.price as i_price
+		,i.shipping as i_shipping
+		,i.description as i_description
+		,b.id AS b_id
+		,b.name AS b_name
+		FROM items AS i
+		LEFT OUTER JOIN brands AS b
+		ON
+		i.brand_id = b.id
 		WHERE
 		1 = 1
-		<if test="name != null">
+		<if test="filter.name != null">
 			AND
-			name ILIKE CONCAT('%', #{name}, '%')
+			name ILIKE CONCAT('%', #{filter.name}, '%')
 		</if>
-		<if test="brand != null">
+		<if test="filter.brand.name != null">
 			AND
-			brand ILIKE CONCAT('%', #{brand}, '%')
+			brand_id IN (
+			SELECT id FROM brands
+			WHERE
+			name ILIKE
+			CONCAT('%', #{filter.brand.name}, '%')
+			)
 		</if>
 		<if
-			test="categoryId != @com.example.common.NullValue@CATEGORY_ID.value">
+			test="filter.brand.id != @com.example.common.NullValue@BRAND_ID.value">
+			AND
+			brand_id = #{filter.brand.id}
+		</if>
+		<if
+			test="filter.categoryId != @com.example.common.NullValue@CATEGORY_ID.value">
 			AND
 			category_id IN (
 			SELECT
@@ -95,13 +145,27 @@
 			FROM
 			category_tree_paths
 			WHERE
-			ancestor_id = #{categoryId}
+			ancestor_id = #{filter.categoryId}
 			)
 		</if>
 		ORDER BY item_id
 		LIMIT 30
-		OFFSET #{offset}
+		OFFSET #{filter.offset}
 	</select>
+	<resultMap type="com.example.domain.Item" id="itemWithBrand">
+		<result property="itemId" column="i_item_id" />
+		<result property="name" column="i_name" />
+		<result property="condition" column="i_condition" />
+		<result property="categoryId" column="i_category_id" />
+		<result property="price" column="i_price" />
+		<result property="shipping" column="i_shipping" />
+		<result property="description" column="i_description" />
+		<association property="brand"
+			javaType="com.example.domain.Brand">
+			<id property="id" column="b_id" />
+			<result property="name" column="b_name" />
+		</association>
+	</resultMap>
 
 
 
