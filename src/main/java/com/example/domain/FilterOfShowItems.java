@@ -41,4 +41,16 @@ public final class FilterOfShowItems {
 		this.page = page;
 		this.offset = PasingConstants.SIZE.getPage() * --page;
 	}
+	public void setName(String name) {
+		if(name != null) {
+			this.name = "%" + name + "%";
+		}
+	}
+	public void setBrand(Brand brand) {
+		String brandName = brand.getName();
+		if(brandName != null) {
+			brand.setName("%" + brandName + "%");
+		}
+		this.brand = brand;
+	}
 }

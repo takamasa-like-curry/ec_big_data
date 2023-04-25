@@ -69,7 +69,7 @@
 		1 = 1
 		<if test="filter.name != null">
 			AND
-			name ILIKE CONCAT('%', #{filter.name}, '%')
+			name ILIKE #{filter.name}
 		</if>
 		<if test="filter.brand.name != null">
 			AND
@@ -79,8 +79,7 @@
 			items.brand_id =
 			brands.id
 			AND
-			name ILIKE
-			CONCAT('%', #{filter.brand.name}, '%')
+			name ILIKE #{filter.brand.name}
 			)
 		</if>
 		<if
@@ -94,7 +93,7 @@
 			EXISTS (
 			SELECT 1
 			FROM
-			category_tree_paths 
+			category_tree_paths
 			WHERE
 			items.category_id
 			= category_tree_paths.descendant_id
@@ -126,7 +125,7 @@
 		1 = 1
 		<if test="filter.name != null">
 			AND
-			i.name ILIKE CONCAT('%', #{filter.name}, '%')
+			i.name ILIKE #{filter.name}
 		</if>
 		<if test="filter.brand.name != null">
 			AND
@@ -135,8 +134,7 @@
 			WHERE
 			i.brand_id = brands.id
 			AND
-			name ILIKE
-			CONCAT('%', #{filter.brand.name}, '%')
+			name ILIKE #{filter.brand.name}
 			)
 		</if>
 		<if
@@ -152,9 +150,11 @@
 			FROM
 			category_tree_paths
 			WHERE
-			i.category_id = category_tree_paths.descendant_id
+			i.category_id =
+			category_tree_paths.descendant_id
 			AND
-			ancestor_id = #{filter.categoryId}
+			ancestor_id =
+			#{filter.categoryId}
 			)
 		</if>
 		ORDER BY i.item_id
