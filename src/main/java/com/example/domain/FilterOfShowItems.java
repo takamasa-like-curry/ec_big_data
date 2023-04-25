@@ -1,5 +1,7 @@
 package com.example.domain;
 
+import com.example.common.PasingConstants;
+
 import lombok.Data;
 
 /**
@@ -16,21 +18,27 @@ public final class FilterOfShowItems {
 	/** 検索するカテゴリID */
 	private int categoryId;
 	/** 検索するブランド名(曖昧も可) */
-	private String brand;
+	private Brand brand;
 	/** 表示するページ */
 	private int page;
+	/** オフセット値 */
+	private int offset;
 
-	public FilterOfShowItems() {
-	};
+	public FilterOfShowItems() {};
 
 	private FilterOfShowItems(String name, int categoryId, String brand, int page) {
 		this.name = name;
 		this.categoryId = categoryId;
-		this.brand = brand;
+		this.brand = Brand.createWithName(brand);
 		this.page = page;
 	}
 
 	public static FilterOfShowItems createFilter(String name, int categoryId, String brand, int page) {
 		return new FilterOfShowItems(name, categoryId, brand, page);
+	}
+
+	public void setPage(int page) {
+		this.page = page;
+		this.offset = PasingConstants.SIZE.getPage() * --page;
 	}
 }
