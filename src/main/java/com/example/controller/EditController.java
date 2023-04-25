@@ -37,7 +37,9 @@ public class EditController {
 			form.setParentId(item.getCategoryList().get(CategoryLevel.PARENT.getLevel()).getId());
 			form.setChildId(item.getCategoryList().get(CategoryLevel.CHILD.getLevel()).getId());
 			form.setGrandChildId(item.getCategoryList().get(CategoryLevel.GRAND_CHILD.getLevel()).getId());
-			form.setBrand(item.getBrand());
+			if(item.getBrand() != null) {
+				form.setBrand(item.getBrand().getName());
+			}
 			form.setCondition(item.getCondition());
 			form.setDescription(item.getDescription());
 

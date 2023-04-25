@@ -47,7 +47,7 @@ public class EditService {
 		item.setItemId(itemId);
 		item.setName(form.getInputName());
 		item.setCondition(form.getCondition());
-		item.setBrand(form.getBrand());
+//		item.setBrand(form.getBrand());   /////////////////////////////////////////////////////////
 		item.setPrice(Double.parseDouble(form.getPrice()));
 		item.setDescription(form.getDescription());
 		item.setCategoryId(form.getGrandChildId());
