@@ -24,11 +24,16 @@ public class SerchItemsForm {
 	private Integer brandId;
 
 	public SerchItemsForm() {
-		
+
 	};
 
 	private SerchItemsForm(Integer brandId) {
 		this.brandId = brandId;
+	}
+
+	private SerchItemsForm(Integer brandId, String brandName) {
+		this.brandId = brandId;
+		this.brandName = brandName;
 	}
 
 	private SerchItemsForm(List<Category> categoryList) {
@@ -44,7 +49,6 @@ public class SerchItemsForm {
 				// エラー処理
 			}
 
-			
 		}
 	}
 
@@ -53,10 +57,31 @@ public class SerchItemsForm {
 
 	}
 
+	public static SerchItemsForm createFormByBrandIdAndBrandName(Integer brandId, String name) {
+		return new SerchItemsForm(brandId, name);
+
+	}
+
 	public static SerchItemsForm createFormByCategoryList(List<Category> categoryList) {
 		return new SerchItemsForm(categoryList);
 
 	}
 
+	/////////////////// セッター////////////////////////////
+	public void setName(String name) {
+		if ("".equals(name)) {
+			this.name = null;
+		} else {
+			this.name = name;
+		}
+	}
+
+	public void setBrandName(String brandName) {
+		if ("".equals(brandName)) {
+			this.brandName = null;
+		} else {
+			this.brandName = brandName;
+		}
+	}
 
 }

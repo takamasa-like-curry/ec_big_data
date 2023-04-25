@@ -73,9 +73,12 @@
 		</if>
 		<if test="filter.brand.name != null">
 			AND
-			brand_id IN (
-			SELECT id FROM brands
+			EXISTS (
+			SELECT 1 FROM brands
 			WHERE
+			items.brand_id =
+			brands.id
+			AND
 			name ILIKE
 			CONCAT('%', #{filter.brand.name}, '%')
 			)
@@ -88,13 +91,16 @@
 		<if
 			test="filter.categoryId != @com.example.common.NullValue@CATEGORY_ID.value">
 			AND
-			category_id IN (
-			SELECT
-			descendant_id
+			EXISTS (
+			SELECT 1
 			FROM
-			category_tree_paths
+			category_tree_paths 
 			WHERE
-			ancestor_id = #{filter.categoryId}
+			items.category_id
+			= category_tree_paths.descendant_id
+			AND
+			ancestor_id =
+			#{filter.categoryId}
 			)
 		</if>
 	</select>
@@ -120,13 +126,15 @@
 		1 = 1
 		<if test="filter.name != null">
 			AND
-			name ILIKE CONCAT('%', #{filter.name}, '%')
+			i.name ILIKE CONCAT('%', #{filter.name}, '%')
 		</if>
 		<if test="filter.brand.name != null">
 			AND
-			brand_id IN (
-			SELECT id FROM brands
+			EXISTS (
+			SELECT 1 FROM brands
 			WHERE
+			i.brand_id = brands.id
+			AND
 			name ILIKE
 			CONCAT('%', #{filter.brand.name}, '%')
 			)
@@ -134,21 +142,22 @@
 		<if
 			test="filter.brand.id != @com.example.common.NullValue@BRAND_ID.value">
 			AND
-			brand_id = #{filter.brand.id}
+			i.brand_id = #{filter.brand.id}
 		</if>
 		<if
 			test="filter.categoryId != @com.example.common.NullValue@CATEGORY_ID.value">
 			AND
-			category_id IN (
-			SELECT
-			descendant_id
+			EXISTS (
+			SELECT 1
 			FROM
 			category_tree_paths
 			WHERE
+			i.category_id = category_tree_paths.descendant_id
+			AND
 			ancestor_id = #{filter.categoryId}
 			)
 		</if>
-		ORDER BY item_id
+		ORDER BY i.item_id
 		LIMIT 30
 		OFFSET #{filter.offset}
 	</select>

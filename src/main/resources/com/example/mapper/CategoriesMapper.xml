@@ -25,11 +25,13 @@
 		<if
 			test="ancestorId != @com.example.common.NullValue@CATEGORY_ID.value">
 			AND
-			id IN (
-			SELECT
-			descendant_id
+			EXISTS (
+			SELECT 1
 			FROM category_tree_paths
 			WHERE
+			categories.id =
+			category_tree_paths.descendant_id
+			AND
 			ancestor_id =
 			#{ancestorId}
 			)
@@ -70,9 +72,11 @@
 		ILIKE #{name}
 		<if test="ancestorId != null">
 			AND EXISTS (
-			SELECT descendant_id
+			1
 			FROM category_tree_paths
 			WHERE
+			categories.id = category_tree_paths.descendant_id
+			AND
 			ancestor_id = #{ancestorId}
 			)
 		</if>
@@ -90,13 +94,14 @@
 		SELECT max(id)
 		FROM categories
 	</select>
-	
+
 	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
-		INSERT INTO categories
+		INSERT
+		INTO categories
 		(name,description,level,registered_date_time,registered_name,updated_date_time,updated_name)
 		VALUES
 		(#{category.name},#{category.description},#{category.level},now(),'登録者ユーザーID',now(),'登録者ユーザーID')
-		
+
 	</insert>
 
 

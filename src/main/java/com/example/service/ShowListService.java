@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.domain.Category;
 import com.example.domain.FilterOfShowItems;
 import com.example.domain.Item;
+import com.example.mapper.BrandsMapper;
 import com.example.mapper.CategoriesMapper;
 import com.example.mapper.ItemsMapper;
 
@@ -20,6 +21,8 @@ public class ShowListService {
 	private ItemsMapper itemsMapper;
 	@Autowired
 	private CategoriesMapper categoriesMapper;
+	@Autowired
+	private BrandsMapper brandsMapper;
 
 	/**
 	 * 指定階層のカテゴリリストを取得.
@@ -50,6 +53,10 @@ public class ShowListService {
 		List<Item> itemList = itemsMapper.findByFilter(filter);
 		itemList = createCategoryList(itemList);
 		return itemList;
+	}
+	
+	public String pickUpBrandNameByBrandId(int BrandId) {
+		return brandsMapper.pickUpNameById(BrandId);
 	}
 
 	private List<Item> createCategoryList(List<Item> itemList) {

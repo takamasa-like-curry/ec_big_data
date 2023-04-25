@@ -61,8 +61,10 @@ public class ShowListController {
 
 		// formからfilterへ変換
 		FilterOfShowItems filter = formAndPageToFilter(form, page);
-		
 
+		System.out.println("==============================");
+		System.out.println(filter);
+		System.out.println("==============================");
 
 		int total = service.countTotaQuantitylByFilter(filter);
 
@@ -116,8 +118,8 @@ public class ShowListController {
 
 	@GetMapping("/brand")
 	public String serchByBrand(Model model, Integer brandId) {
-		
-		return showList(model, SerchItemsForm.createFormByBrandId(brandId), null);
+		String brandName = service.pickUpBrandNameByBrandId(brandId);
+		return showList(model, SerchItemsForm.createFormByBrandIdAndBrandName(brandId, brandName), null);
 	}
 
 	@GetMapping("/jump")
@@ -160,10 +162,11 @@ public class ShowListController {
 	private FilterOfShowItems formAndPageToFilter(SerchItemsForm form, Integer page) {
 		FilterOfShowItems filter = new FilterOfShowItems();
 		filter.setName(form.getName());
-		if (form.getBrandName() != null) {
-			filter.setBrand(Brand.createWithName(form.getBrandName()));
-		} else if (form.getBrandId() != null) {
+		// ブランド名とブランドIDの両方を保維持する場合、検索にはIDが優先されるようにしている。
+		if (form.getBrandId() != null) {
 			filter.setBrand(Brand.createWithId(form.getBrandId()));
+		} else if (form.getBrandName() != null) {
+			filter.setBrand(Brand.createWithName(form.getBrandName()));
 		} else {
 			filter.setBrand(Brand.create());
 		}
