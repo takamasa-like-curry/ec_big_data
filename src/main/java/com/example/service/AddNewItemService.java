@@ -44,7 +44,7 @@ public class AddNewItemService {
 		Item item = new Item();
 		item.setName(form.getInputName());
 		item.setCondition(form.getCondition());
-		item.setBrand(form.getBrand());
+//		item.setBrand(form.getBrand()); ////////////////////////////////////////////////////////////////////////////////
 		item.setPrice(Double.parseDouble(form.getPrice()));
 		item.setShipping(NullValue.SHIPPING.getValue()); 
 		item.setDescription(form.getDescription());
