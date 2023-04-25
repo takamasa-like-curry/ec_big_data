@@ -12,6 +12,7 @@ import com.example.common.CategoryLevel;
 import com.example.common.NullValue;
 import com.example.common.Page;
 import com.example.common.PasingConstants;
+import com.example.domain.Brand;
 import com.example.domain.Category;
 import com.example.domain.FilterOfShowItems;
 import com.example.domain.Item;
@@ -60,6 +61,8 @@ public class ShowListController {
 
 		// formからfilterへ変換
 		FilterOfShowItems filter = formAndPageToFilter(form, page);
+		
+
 
 		int total = service.countTotaQuantitylByFilter(filter);
 
@@ -68,6 +71,7 @@ public class ShowListController {
 		model.addAttribute("totalPage", ++totalPage);
 
 		List<Item> itemlist = service.PickUpItemListByFilter(filter);
+
 		model.addAttribute("itemList", itemlist);
 
 		// 親カテゴリの処理
@@ -111,9 +115,9 @@ public class ShowListController {
 	}
 
 	@GetMapping("/brand")
-	public String serchByBrand(Model model, String brand) {
-
-		return showList(model, SerchItemsForm.createFormByBrand(brand), null);
+	public String serchByBrand(Model model, Integer brandId) {
+		
+		return showList(model, SerchItemsForm.createFormByBrandId(brandId), null);
 	}
 
 	@GetMapping("/jump")
@@ -156,7 +160,13 @@ public class ShowListController {
 	private FilterOfShowItems formAndPageToFilter(SerchItemsForm form, Integer page) {
 		FilterOfShowItems filter = new FilterOfShowItems();
 		filter.setName(form.getName());
-		filter.setBrand(form.getBrand());
+		if (form.getBrandName() != null) {
+			filter.setBrand(Brand.createWithName(form.getBrandName()));
+		} else if (form.getBrandId() != null) {
+			filter.setBrand(Brand.createWithId(form.getBrandId()));
+		} else {
+			filter.setBrand(Brand.create());
+		}
 		if (form.getGrandChildCategoryId() != null) {
 			filter.setCategoryId(form.getGrandChildCategoryId());
 		} else if (form.getChildCategoryId() != null) {

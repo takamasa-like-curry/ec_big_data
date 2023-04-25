@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.common.PasingConstants;
 import com.example.domain.Category;
 import com.example.domain.FilterOfShowItems;
 import com.example.domain.Item;
@@ -26,6 +25,7 @@ public class ShowListService {
 	 * 指定階層のカテゴリリストを取得.
 	 * 
 	 * 主に、検索カテゴリ選択フォームの表示に使用
+	 * 
 	 * @param level カテゴリの階層
 	 * @return 該当階層のカテゴリリスト
 	 */
@@ -41,26 +41,16 @@ public class ShowListService {
 	}
 
 	public int countTotaQuantitylByFilter(FilterOfShowItems filter) {
-		String name = filter.getName();
-		String brand = filter.getBrand();
-		int categoryId = filter.getCategoryId();
 
-		return itemsMapper.countTotalQuantity(name, brand, categoryId);
+		return itemsMapper.countTotalQuantity(filter);
 	}
 
 	public List<Item> PickUpItemListByFilter(FilterOfShowItems filter) {
-		String name = filter.getName();
-		String brand = filter.getBrand();
-		int categoryId = filter.getCategoryId();
-		int page = filter.getPage();
-		int offset = PasingConstants.SIZE.getPage() * --page;
 
-		List<Item> itemList = itemsMapper.findByFilter(name, brand, categoryId, offset);
+		List<Item> itemList = itemsMapper.findByFilter(filter);
 		itemList = createCategoryList(itemList);
 		return itemList;
 	}
-
-
 
 	private List<Item> createCategoryList(List<Item> itemList) {
 
