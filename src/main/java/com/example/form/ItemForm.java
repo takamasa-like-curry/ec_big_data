@@ -17,13 +17,13 @@ public class ItemForm {
 	private String price;
 	/** 親カテゴリ */
 	@NotNull(message = "選択必須項目です")
-	private Integer parentId;
+	private Integer parentCategoryId;
 	/** 子カテゴリ */
 	@NotNull(message = "選択必須項目です")
-	private Integer childId;
+	private Integer childCategoryId;
 	/** 孫カテゴリ */
 	@NotNull(message = "選択必須項目です")
-	private Integer grandChildId;
+	private Integer grandChildCategoryId;
 	/** ブランド名 */
 	@Size(max = 255, message = "最大255文字までです。")
 	private String brand;

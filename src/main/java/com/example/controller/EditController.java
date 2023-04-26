@@ -34,9 +34,9 @@ public class EditController {
 		if (!br.hasErrors()) {
 			form.setInputName(item.getName());
 			form.setPrice(String.valueOf(item.getPrice()));
-			form.setParentId(item.getCategoryList().get(CategoryLevel.PARENT.getLevel()).getId());
-			form.setChildId(item.getCategoryList().get(CategoryLevel.CHILD.getLevel()).getId());
-			form.setGrandChildId(item.getCategoryList().get(CategoryLevel.GRAND_CHILD.getLevel()).getId());
+			form.setParentCategoryId(itemId);
+			form.setChildCategoryId(itemId);
+			form.setGrandChildCategoryId(itemId);
 			if(item.getBrand() != null) {
 				form.setBrand(item.getBrand().getName());
 			}
@@ -50,13 +50,13 @@ public class EditController {
 				NullValue.CATEGORY_ID.getValue(), CategoryLevel.PARENT.getLevel());
 		model.addAttribute("parentCategoryList", parentCategoryList);
 
-		if (form.getParentId() != null) {
-			List<Category> childCategoryList = service.pickUpCategoryListByAncestorIdAndLevel(form.getParentId(),
+		if (form.getParentCategoryId() != null) {
+			List<Category> childCategoryList = service.pickUpCategoryListByAncestorIdAndLevel(form.getParentCategoryId(),
 					CategoryLevel.CHILD.getLevel());
 			model.addAttribute("childCategoryList", childCategoryList);
 		}
-		if (form.getChildId() != null) {
-			List<Category> grandChildCategoryList = service.pickUpCategoryListByAncestorIdAndLevel(form.getChildId(),
+		if (form.getChildCategoryId() != null) {
+			List<Category> grandChildCategoryList = service.pickUpCategoryListByAncestorIdAndLevel(form.getChildCategoryId(),
 					CategoryLevel.GRAND_CHILD.getLevel());
 			model.addAttribute("grandChildCategoryList", grandChildCategoryList);
 		}
@@ -68,11 +68,11 @@ public class EditController {
 	public String insert(Model model, @Validated ItemForm form, BindingResult br, Integer itemId) {
 
 		// カテゴリの入力値チェック
-		if (form.getParentId() == NullValue.CATEGORY_ID.getValue()) {
+		if (form.getParentCategoryId() == NullValue.CATEGORY_ID.getValue()) {
 			br.rejectValue("parentId", null, "選択必須項目です");
-		} else if (form.getChildId() == NullValue.CATEGORY_ID.getValue()) {
+		} else if (form.getChildCategoryId() == NullValue.CATEGORY_ID.getValue()) {
 			br.rejectValue("parentId", null, "選択必須項目です(子カテゴリ、孫カテゴリも選択必須)");
-		} else if (form.getGrandChildId() == NullValue.CATEGORY_ID.getValue()) {
+		} else if (form.getGrandChildCategoryId() == NullValue.CATEGORY_ID.getValue()) {
 			br.rejectValue("parentId", null, "選択必須項目です(孫カテゴリも選択必須)");
 		}
 

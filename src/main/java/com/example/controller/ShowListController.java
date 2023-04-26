@@ -46,9 +46,6 @@ public class ShowListController {
 	 */
 	@GetMapping("")
 	public String showList(Model model, SerchItemsForm form, Integer page) {
-		System.out.println("==============================");
-		System.out.println(form);
-		System.out.println("==============================");
 
 		// sessionにフォームを追加
 		session.setAttribute("form", form);
@@ -61,10 +58,6 @@ public class ShowListController {
 
 		// formからfilterへ変換
 		FilterOfShowItems filter = formAndPageToFilter(form, page);
-
-		System.out.println("==============================");
-		System.out.println(filter);
-		System.out.println("==============================");
 
 		int total = service.countTotaQuantitylByFilter(filter);
 

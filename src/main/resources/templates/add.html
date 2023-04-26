@@ -106,82 +106,122 @@
           </div>
         </div>
         <!-- category -->
-        <div class="form-group">
-          <label for="category" class="col-sm-2 control-label">category</label>
-          <div class="col-sm-8">
-            <select
-              class="form-control"
-              id="parent-id"
-              name="parentId"
-              th:field="*{parentId}"
-            >
-              <option value="-1">-- parentCategory --</option>
-              <div th:each="parentCategory : ${parentCategoryList}">
-                <option
-                  th:text="${parentCategory.name}"
-                  th:value="${parentCategory.id}"
-                >
-                  親カテゴリ名
-                </option>
-              </div>
-            </select>
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="category" class="col-sm-2 control-label"></label>
-          <div class="col-sm-8">
-            <select
-              class="form-control"
-              id="child-id"
-              name="childId"
-              th:field="*{childId}"
-            >
-              <option value="-1">-- childCategory --</option>
-              <div
-                th:if="${childCategoryList}"
-                th:each="childCategory : ${childCategoryList}"
+        <div class="category">
+          <!-- 親カテゴリ -->
+          <div id="parent-category-area">
+            <div class="form-group">
+              <label for="parent-category-id" class="col-sm-2 control-label"
+                >category</label
               >
-                <option
-                  th:text="${childCategory.name}"
-                  th:value="${childCategory.id}"
+              <div class="col-sm-8">
+                <select
+                  class="form-control"
+                  id="parent-category-id"
+                  name="parentCategoryId"
+                  th:field="*{parentCategoryId}"
                 >
-                  子カテゴリ名
-                </option>
+                  <option value="">-- parentCategory --</option>
+                  <div th:each="parentCategory : ${parentCategoryList}">
+                    <option
+                      th:text="${parentCategory.name}"
+                      th:value="${parentCategory.id}"
+                    >
+                      親カテゴリ名
+                    </option>
+                  </div>
+                </select>
+                <div id="parent-category-message-area">
+                  <div
+                    th:errors="*{parentCategoryId}"
+                    class="text-danger"
+                    id="parent-category-message"
+                  ></div>
+                </div>
               </div>
-            </select>
+            </div>
           </div>
-        </div>
-        <div class="form-group">
-          <label for="category" class="col-sm-2 control-label"></label>
-          <div class="col-sm-8">
-            <select
-              class="form-control"
-              id="grand-child-id"
-              name="grandChildId"
-              th:field="*{grandChildId}"
+          <!-- 親カテゴリ終了 -->
+          <!-- 子カテゴリ -->
+          <div id="child-category-area">
+            <div
+              th:if="*{parentCategoryId} != null"
+              class="form-group"
+              id="select-child-category-id"
             >
-              <option value="-1">-- grandChild --</option>
-              <div
-                th:if="${grandChildCategoryList}"
-                th:each="grandChildCategory : ${grandChildCategoryList}"
-              >
-                <option
-                  th:text="${grandChildCategory.name}"
-                  th:value="${grandChildCategory.id}"
+              <label
+                for="child-category-id"
+                class="col-sm-2 control-label"
+              ></label>
+              <div class="col-sm-8">
+                <select
+                  class="form-control"
+                  id="child-category-id"
+                  name="childCategoryId"
+                  th:field="*{childCategoryId}"
                 >
-                  孫カテゴリ名
-                </option>
+                  <option value="">-- childCategory --</option>
+                  <div
+                    th:if="${childCategoryList}"
+                    th:each="childCategory : ${childCategoryList}"
+                  >
+                    <option
+                      th:text="${childCategory.name}"
+                      th:value="${childCategory.id}"
+                    >
+                      子カテゴリ名
+                    </option>
+                  </div>
+                </select>
+                <div id="child-category-message-area">
+                  <div
+                    th:errors="*{childCategoryId}"
+                    class="text-danger"
+                    id="child-category-message"
+                  ></div>
+                </div>
               </div>
-            </select>
+            </div>
           </div>
-        </div>
-        <div class="form-group">
-          <label for="category" class="col-sm-2 control-label"></label>
-          <div class="col-sm-8">
-            <span class="text-danger" th:errors="*{parentId}"
-              >入力エラーメッセージ</span
+          <!-- 子カテゴリ終了 -->
+          <!-- 孫カテゴリ -->
+          <div id="grand-child-category-area">
+            <div
+              th:if="*{childCategoryId}"
+              class="form-group"
+              id="select-grand-child-category-id"
             >
+              <label for="category" class="col-sm-2 control-label"></label>
+              <div class="col-sm-8">
+                <select
+                  class="form-control"
+                  id="grand-child-category-id"
+                  name="grandChildCategoryId"
+                  th:field="*{grandChildCategoryId}"
+                >
+                  <option value="">-- grandChild --</option>
+                  <div
+                    th:if="${grandChildCategoryList}"
+                    th:each="grandChildCategory : ${grandChildCategoryList}"
+                  >
+                    <option
+                      th:text="${grandChildCategory.name}"
+                      th:value="${grandChildCategory.id}"
+                    >
+                      孫カテゴリ名
+                    </option>
+                  </div>
+                </select>
+                <div id="grand-child-category-message-area">
+                  <div
+                    th:errors="*{grandChildCategoryId}"
+                    class="text-danger"
+                    id="grand-child-category-message"
+                  ></div>
+                </div>
+              </div>
+            </div>
           </div>
+          <!-- 孫カテゴリ終了 -->
         </div>
         <!-- brand -->
         <div class="form-group">
@@ -278,7 +318,7 @@
       integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
       crossorigin="anonymous"
     ></script>
-    <script th:src="@{/js/show_categories.js}"></script>
+    <script th:src="@{/js/add.js}"></script>
     <script th:src="@{/js/view.js}"></script>
   </body>
 </html>

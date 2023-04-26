@@ -39,6 +39,7 @@
 		ORDER BY
 		name
 	</select>
+	
 
 	<select id="findByDescendantId"
 		resultType="com.example.domain.Category">
@@ -57,6 +58,29 @@
 		ORDER BY
 		level
 	</select>
+	
+	<select id="pickUpSubordinateCategoryList"
+		resultType="com.example.domain.Category">
+		SELECT
+		id,name,level
+		FROM categories
+		WHERE
+		EXISTS (
+		SELECT 1
+		FROM category_tree_paths
+		WHERE
+		categories.id = category_tree_paths.descendant_id
+		AND
+		ancestor_id = #{id}
+		)
+		AND
+		level = (
+			SELECT level + 1
+			FROM categories 
+			WHERE
+			id = #{id}
+		)
+	</select>
 
 	<select id="checkCategoryNameDuplication" resultType="boolean">
 		SELECT
@@ -72,10 +96,11 @@
 		ILIKE #{name}
 		<if test="ancestorId != null">
 			AND EXISTS (
-			1
+			SELECT 1
 			FROM category_tree_paths
 			WHERE
-			categories.id = category_tree_paths.descendant_id
+			categories.id =
+			category_tree_paths.descendant_id
 			AND
 			ancestor_id = #{ancestorId}
 			)
@@ -94,6 +119,25 @@
 		SELECT max(id)
 		FROM categories
 	</select>
+	
+	<select id="existsDescendantCategory" resultType="boolean">
+		SELECT
+		EXISTS (
+			SELECT 1
+			FROM categories
+			WHERE
+			level >= ${@com.example.common.CategoryLevel@GRAND_CHILD.level}
+			AND
+			EXISTS (
+				SELECT 1
+				FROM category_tree_paths
+				WHERE
+				categories.id = category_tree_paths.descendant_id
+			AND 
+			ancestor_id = #{id}
+			)
+		)
+	</select> 
 
 	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
 		INSERT
