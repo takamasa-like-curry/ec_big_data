@@ -50,7 +50,7 @@ public class EditService {
 //		item.setBrand(form.getBrand());   /////////////////////////////////////////////////////////
 		item.setPrice(Double.parseDouble(form.getPrice()));
 		item.setDescription(form.getDescription());
-		item.setCategoryId(form.getGrandChildId());
+		item.setCategoryId(form.getGrandChildCategoryId());
 
 		return item;
 	}

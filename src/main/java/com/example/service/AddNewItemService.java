@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.common.CategoryLevel;
 import com.example.common.NullValue;
 import com.example.domain.Category;
 import com.example.domain.Item;
@@ -20,19 +21,6 @@ public class AddNewItemService {
 	@Autowired
 	private CategoriesMapper categoriesMapper;
 
-
-
-	public List<Category> pickUpCategoryListByAncestorIdAndLevel(Integer ancestorId, Integer level) {
-		List<Category> categoryList = categoriesMapper.findByAncestorIdAndLevel(ancestorId, level);
-		//無名カテゴリ排除。新規追加商品には無名カテゴリを使用させないため。
-		for (int i = 0; i < categoryList.size(); i++) {
-			if ("".equals(categoryList.get(i).getName())) {
-				categoryList.remove(i);
-			}
-		}
-		return categoryList;
-	}
-
 	public void insertItem(ItemForm form) {
 		Item item = createItem(form);
 		itemsMapper.deleteIndexForItemId();
@@ -46,15 +34,40 @@ public class AddNewItemService {
 		item.setCondition(form.getCondition());
 //		item.setBrand(form.getBrand()); ////////////////////////////////////////////////////////////////////////////////
 		item.setPrice(Double.parseDouble(form.getPrice()));
-		item.setShipping(NullValue.SHIPPING.getValue()); 
+		item.setShipping(NullValue.SHIPPING.getValue());
 		item.setDescription(form.getDescription());
-		item.setCategoryId(form.getGrandChildId());
+		item.setCategoryId(form.getGrandChildCategoryId());
 		Integer itemId = itemsMapper.pickUpLatestItemId();
 		item.setItemId(++itemId);
 
 		return item;
 	}
-	
 
+	public boolean existsDescendantCategory(int categoryId) {
+		return categoriesMapper.existsDescendantCategory(categoryId);
+	}
+
+	public List<Category> pickUpParentCategoryList() {
+		List<Category> parentCategoryList = categoriesMapper.findByAncestorIdAndLevel(NullValue.CATEGORY_ID.getValue(),
+				CategoryLevel.PARENT.getLevel());
+		parentCategoryList = removeIncompleteCategory(parentCategoryList);
+		return parentCategoryList;
+	}
+
+	public List<Category> pickUpSubordinateCategoryList(int CategoryId) {
+		List<Category> subordinateCategoryList = categoriesMapper.pickUpSubordinateCategoryList(CategoryId);
+		subordinateCategoryList = removeIncompleteCategory(subordinateCategoryList);
+		return subordinateCategoryList;
+	}
+
+	private List<Category> removeIncompleteCategory(List<Category> categoryList) {
+		for (int i = 0; i < categoryList.size(); i++) {
+			if (!categoriesMapper.existsDescendantCategory(categoryList.get(i).getId())) {
+				categoryList.remove(i);
+				i--;
+			}
+		}
+		return categoryList;
+	}
 
 }
