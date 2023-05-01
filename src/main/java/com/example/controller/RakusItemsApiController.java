@@ -37,7 +37,7 @@ public class RakusItemsApiController {
 		return map;
 
 	}
-	
+
 	@GetMapping("pick-up-brand-list")
 	public Map<String, List<Brand>> pickUpBrandList(String brandName) {
 
@@ -47,6 +47,12 @@ public class RakusItemsApiController {
 		}
 		return map;
 
+	}
+
+	@GetMapping("/input-brand-name-is-exists")
+	public ResponseEntity<Boolean> inputBrandNameIsExists(String brandName) {
+		Boolean result = service.brandNameExistsInDb(brandName);
+		return ResponseEntity.ok(result);
 	}
 
 }

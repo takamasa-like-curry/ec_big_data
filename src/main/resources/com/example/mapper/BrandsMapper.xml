@@ -10,7 +10,7 @@
 		WHERE
 		id = #{id}
 	</select>
-	
+
 	<select id="findByName" resultType="com.example.domain.Brand">
 		SELECT id,name
 		FROM brands
@@ -18,6 +18,26 @@
 		name ILIKE #{name}
 		ORDER BY name
 	</select>
+
+	<select id="isExists" resultType="boolean">
+		SELECT
+		NOT EXISTS(
+		SELECT 1
+		FROM
+		brands
+		WHERE
+		name ILIKE #{brandName}
+		);
+	</select>
+
+
+	<insert id="insert">
+		INSERT INTO brands
+		(name,registered_date_time,registered_name,updated_date_time,updated_name)
+		VALUES
+		(#{brandName},now(),'登録者(ログイン機能実装までの仮)',now(),'更新者(ログイン機能実装までの仮)')
+	</insert>
+
 
 
 </mapper>
