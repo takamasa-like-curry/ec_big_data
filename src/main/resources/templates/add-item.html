@@ -23,6 +23,7 @@
       crossorigin="anonymous"
     />
     <link rel="stylesheet" th:href="@{/css/mercari.css}" />
+    <link rel="stylesheet" th:href="@{/css/add-item.css}" />
     <title>Rakus Items</title>
   </head>
   <body>
@@ -225,16 +226,79 @@
         </div>
         <!-- brand -->
         <div class="form-group">
-          <label for="brand" class="col-sm-2 control-label">brand</label>
+          <label for="brand-id" class="col-sm-2 control-label">brand</label>
+          <div class="col-sm-4">
+            <div id="open">ブランドを選択</div>
+            <div th:if="${brandName} != null">
+              <div id="brand-name" th:text="${brandName}"></div>
+              <div id="delete-brand-btn-area">
+                <button
+                  type="button"
+                  class="btn btn-default"
+                  id="delete-brand-btn"
+                >
+                  選択したカテゴリを削除
+                </button>
+              </div>
+            </div>
+            <div th:if="${brandName} == null">
+              <div id="brand-name">未選択(必須項目ではありません)</div>
+              <div id="delete-brand-btn-area"></div>
+            </div>
+            <input type="hidden" name="brandName" id="hidden-brand-name" />
+          </div>
+          <div class="overlay"></div>
+          <!-- ここからモーダル -->
+          <div class="modal">
+            <!-- ここからモータルの内部の記述 -->
+            <div class="container cen">
+              <p class="select-brand-title">ブランド検索画面</p>
+              <div class="top-5">
+                <div class="col-sm-6 mx-auto text-center">
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="input-brand-name"
+                  />
+                </div>
+                <div class="col-sm-1 mx-auto">
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    id="serch-brand-btn"
+                  >
+                    検索
+                  </button>
+                </div>
+              </div>
+              <div class="select-brand">
+                <div id="select-brand-message"></div>
+                <!-- ブランド選択エリア -->
+                <div id="select-brand-area" class="col-sm-6"></div>
+                <!--　ここまで ブランド選択エリア -->
+                <div class="selected-brand-area col-sm-8">
+                  <b id="selected-brand-name">未選択</b>
+                </div>
+              </div>
+              <!-- 閉じるボタンエリア -->
+              <div class=""></div>
+              <button class="btn btn-primary" type="button" id="close">
+                決定
+              </button>
+
+              <!-- ここまでがモータルの内部の記述 -->
+            </div>
+          </div>
+          <!-- ここまでモーダル -->
           <div class="col-sm-8">
             <input
-              type="text"
-              id="brand"
+              type="hidden"
+              id="brand-id"
               class="form-control"
-              name="brand"
-              th:field="*{brand}"
+              name="brandId"
+              th:field="*{brandId}"
             />
-            <span class="text-danger" th:errors="*{brand}"
+            <span class="text-danger" th:errors="*{brandId}"
               >error:may not be empty</span
             >
           </div>
@@ -245,7 +309,7 @@
             >condition</label
           >
           <div class="col-sm-8">
-            <label for="condition1" class="radio-inline">
+            <label for="condition1">
               <input
                 type="radio"
                 name="condition"
@@ -255,7 +319,7 @@
               />
               1
             </label>
-            <label for="condition2" class="radio-inline">
+            <label for="condition2">
               <input
                 type="radio"
                 name="condition"
@@ -265,7 +329,7 @@
               />
               2
             </label>
-            <label for="condition3" class="radio-inline">
+            <label for="condition3">
               <input
                 type="radio"
                 name="condition"

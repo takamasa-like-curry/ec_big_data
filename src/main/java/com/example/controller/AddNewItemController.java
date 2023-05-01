@@ -31,6 +31,7 @@ public class AddNewItemController {
 	 */
 	@GetMapping("")
 	public String showAddNewItemPage(Model model, ItemForm form) {
+		
 		// 親カテゴリの処理
 		List<Category> parentCategoryList = service.pickUpParentCategoryList();
 		model.addAttribute("parentCategoryList", parentCategoryList);
@@ -43,12 +44,15 @@ public class AddNewItemController {
 			List<Category> grandChildCategoryList = service.pickUpSubordinateCategoryList(form.getChildCategoryId());
 			model.addAttribute("grandChildCategoryList", grandChildCategoryList);
 		}
+		
+		model.addAttribute("brandName",form.getBrandName());
 
-		return "add";
+		return "add-item";
 	}
 
 	@PostMapping("/insert")
 	public String insert(Model model, @Validated ItemForm form, BindingResult br) {
+		
 		// エラーがあれば入力画面に遷移
 		if (br.hasErrors()) {
 			return showAddNewItemPage(model, form);
@@ -67,10 +71,9 @@ public class AddNewItemController {
 				Double.parseDouble(form.getPrice());
 			} catch (Exception e) {
 				br.rejectValue("price", null, "価格を数値で入力してください(単位は$です)");
+				return showAddNewItemPage(model, form);
 			}
-			return showAddNewItemPage(model, form);
 		}
-
 		service.insertItem(form);
 
 		return "redirect:/";

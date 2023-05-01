@@ -10,6 +10,14 @@
 		WHERE
 		id = #{id}
 	</select>
+	
+	<select id="findByName" resultType="com.example.domain.Brand">
+		SELECT id,name
+		FROM brands
+		WHERE
+		name ILIKE #{name}
+		ORDER BY name
+	</select>
 
 
 </mapper>
