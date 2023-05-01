@@ -7,7 +7,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.common.CategoryLevel;
+import com.example.domain.Brand;
 import com.example.domain.Category;
+import com.example.mapper.BrandsMapper;
 import com.example.mapper.CategoriesMapper;
 
 @Service
@@ -16,6 +18,8 @@ public class RakusItemsApiService {
 
 	@Autowired
 	private CategoriesMapper categoriesMapper;
+	@Autowired
+	private BrandsMapper brandsMapper;
 
 	public Boolean checkCategoryNameDuplication(String categoryName, Integer ancestorId) {
 		int level;
@@ -41,5 +45,10 @@ public class RakusItemsApiService {
 			}
 		}
 		return subordinateCategoryList;
+	}
+	
+	public List<Brand> pickUpBrandListByBrandName(String brandName){
+		brandName = "%" + brandName + "%";
+		return brandsMapper.findByName(brandName);
 	}
 }

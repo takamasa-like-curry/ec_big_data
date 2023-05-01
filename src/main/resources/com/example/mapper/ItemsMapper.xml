@@ -181,9 +181,9 @@
 
 	<insert id="insert" parameterType="map">
 		INSERT INTO items
-		(item_id,name,condition,category_id,brand,price,shipping,description,registered_date_time,registered_name,updated_date_time,updated_name)
+		(item_id,name,condition,category_id,brand_id,price,shipping,description,registered_date_time,registered_name,updated_date_time,updated_name)
 		VALUES
-		(#{item.itemId},#{item.name},#{item.condition},#{item.categoryId},#{item.brand},#{item.price},#{item.shipping},#{item.description},now(),'登録者(ログイン機能実装までの仮)',now(),'更新者(ログイン機能実装までの仮)')
+		(#{item.itemId},#{item.name},#{item.condition},#{item.categoryId},#{item.brand.id},#{item.price},#{item.shipping},#{item.description},now(),'登録者(ログイン機能実装までの仮)',now(),'更新者(ログイン機能実装までの仮)')
 	</insert>
 
 	<update id="updateItem" parameterType="map">
@@ -195,7 +195,7 @@
 		,category_id
 		=
 		#{item.categoryId}
-		,brand = #{item.brand}
+		,brand_id = #{item.brand.id}
 		,price = #{item.price}
 		,description = #{item.description}
 		,updated_date_time = now()

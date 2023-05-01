@@ -22,6 +22,11 @@ public class Brand {
 		setId(id);
 	}
 	
+	private Brand(Integer id,String name) {
+		this.id = id;
+		this.name = name;
+	}
+	
 	
 
 	public static Brand createWithName(String name) {
@@ -32,6 +37,10 @@ public class Brand {
 	}
 	public static Brand create() {
 		return new Brand();
+	}
+	
+	public static Brand createWithIdAndName(Integer id,String name) {
+		return new Brand(id, name);
 	}
 //////////////////セッター・セッター///////////////////////////////////
 	

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.common.CategoryLevel;
 import com.example.common.NullValue;
+import com.example.domain.Brand;
 import com.example.domain.Category;
 import com.example.domain.Item;
 import com.example.form.ItemForm;
@@ -32,7 +33,11 @@ public class AddNewItemService {
 		Item item = new Item();
 		item.setName(form.getInputName());
 		item.setCondition(form.getCondition());
-//		item.setBrand(form.getBrand()); ////////////////////////////////////////////////////////////////////////////////
+		if (form.getBrandId() == null) {
+			item.setBrand(Brand.create());
+		} else {
+			item.setBrand(Brand.createWithIdAndName(form.getBrandId(), form.getBrandName()));
+		}
 		item.setPrice(Double.parseDouble(form.getPrice()));
 		item.setShipping(NullValue.SHIPPING.getValue());
 		item.setDescription(form.getDescription());
