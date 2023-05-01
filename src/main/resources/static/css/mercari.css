@@ -27,8 +27,8 @@ div.addData {
   display: flex;
   justify-content: flex-end;
 }
-div#addCategoryButton {
-  margin-left: 2em;
+div.addButton {
+  margin-left: 1em;
 }
 
 /* detail.html */
