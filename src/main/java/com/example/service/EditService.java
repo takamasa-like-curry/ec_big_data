@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.domain.Brand;
 import com.example.domain.Category;
 import com.example.domain.Item;
 import com.example.form.ItemForm;
@@ -36,18 +37,18 @@ public class EditService {
 		return categoryList;
 	}
 
-	public synchronized void upDateItem(ItemForm form, Integer itemId) {
+	public synchronized void upDateItem(ItemForm form) {
 
-		Item item = createItem(form, itemId);
+		Item item = createItem(form);
 		itemsMapper.updateItem(item);
 	}
 
-	private Item createItem(ItemForm form, Integer itemId) {
+	private Item createItem(ItemForm form) {
 		Item item = new Item();
-		item.setItemId(itemId);
+		item.setItemId(form.getId());
 		item.setName(form.getInputName());
 		item.setCondition(form.getCondition());
-//		item.setBrand(form.getBrand());   /////////////////////////////////////////////////////////
+		item.setBrand(Brand.createWithIdAndName(form.getBrandId(), form.getBrandName()));  
 		item.setPrice(Double.parseDouble(form.getPrice()));
 		item.setDescription(form.getDescription());
 		item.setCategoryId(form.getGrandChildCategoryId());

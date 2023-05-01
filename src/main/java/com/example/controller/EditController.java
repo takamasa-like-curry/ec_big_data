@@ -32,6 +32,7 @@ public class EditController {
 		Item item = service.load(itemId);
 
 		if (!br.hasErrors()) {
+			form.setId(itemId);
 			form.setInputName(item.getName());
 			form.setPrice(String.valueOf(item.getPrice()));
 
@@ -67,16 +68,7 @@ public class EditController {
 	}
 
 	@PostMapping("/update")
-	public String insert(Model model, @Validated ItemForm form, BindingResult br, Integer itemId) {
-
-		// カテゴリの入力値チェック
-		if (form.getParentCategoryId() == NullValue.CATEGORY_ID.getValue()) {
-			br.rejectValue("parentId", null, "選択必須項目です");
-		} else if (form.getChildCategoryId() == NullValue.CATEGORY_ID.getValue()) {
-			br.rejectValue("parentId", null, "選択必須項目です(子カテゴリ、孫カテゴリも選択必須)");
-		} else if (form.getGrandChildCategoryId() == NullValue.CATEGORY_ID.getValue()) {
-			br.rejectValue("parentId", null, "選択必須項目です(孫カテゴリも選択必須)");
-		}
+	public String insert(Model model, @Validated ItemForm form, BindingResult br) {
 
 		// 金額のチェック
 		if (!("".equals(form.getPrice()))) {
@@ -89,10 +81,10 @@ public class EditController {
 
 		// エラーがあれば入力画面に遷移
 		if (br.hasErrors()) {
-			return showEditPage(model, form, itemId, br);
+			return showEditPage(model, form, form.getId(), br);
 		}
 
-		service.upDateItem(form, itemId); // updateに書き換え
+		service.upDateItem(form); // updateに書き換え
 
 		return "redirect:/";
 	}
