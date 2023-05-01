@@ -34,9 +34,11 @@ public class EditController {
 		if (!br.hasErrors()) {
 			form.setInputName(item.getName());
 			form.setPrice(String.valueOf(item.getPrice()));
+
 			form.setParentCategoryId(item.getCategoryList().get(CategoryLevel.PARENT.getLevel()).getId());
 			form.setChildCategoryId(item.getCategoryList().get(CategoryLevel.CHILD.getLevel()).getId());
 			form.setGrandChildCategoryId(item.getCategoryList().get(CategoryLevel.GRAND_CHILD.getLevel()).getId());
+
 			if (item.getBrand() != null) {
 				form.setBrandId(item.getBrand().getId());
 				form.setBrandName(item.getBrand().getName());

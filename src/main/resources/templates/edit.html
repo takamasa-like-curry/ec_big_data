@@ -228,6 +228,7 @@
         </div>
         <!-- brand -->
         <div class="form-group">
+<<<<<<< HEAD
           <label for="brand-id" class="col-sm-2 control-label">brand</label>
           <div class="col-sm-4">
             <div id="open">ブランドを選択</div>
@@ -292,9 +293,35 @@
             </div>
           </div>
           <!-- ここまでモーダル -->
+=======
+          <label for="brand" class="col-sm-2 control-label">brand</label>
+          <div class="col-sm-4">
+            <div th:if="${brandName} != null">
+              <div id="brand-name" th:text="${brandName}"></div>
+              <div id="delete-brand-btn-area">
+                <button
+                  type="button"
+                  class="btn btn-default"
+                  id="delete-brand-btn"
+                >
+                  選択したカテゴリを削除
+                </button>
+              </div>
+            </div>
+            <div th:if="${brandName} == null">
+              <div id="brand-name">未選択(必須項目ではありません)</div>
+              <div id="delete-brand-btn-area"></div>
+            </div>
+            <input type="hidden" name="brandName" id="hidden-brand-name" />
+          </div>
+>>>>>>> stash
           <div class="col-sm-8">
             <input
+<<<<<<< HEAD
               type="hidden"
+=======
+              type="hidd"
+>>>>>>> stash
               id="brand-id"
               class="form-control"
               name="brandId"
