@@ -34,30 +34,30 @@ public class EditController {
 		if (!br.hasErrors()) {
 			form.setInputName(item.getName());
 			form.setPrice(String.valueOf(item.getPrice()));
-			form.setParentCategoryId(itemId);
-			form.setChildCategoryId(itemId);
-			form.setGrandChildCategoryId(itemId);
-			if(item.getBrand() != null) {
-				form.setBrand(item.getBrand().getName());
+			form.setParentCategoryId(item.getCategoryList().get(CategoryLevel.PARENT.getLevel()).getId());
+			form.setChildCategoryId(item.getCategoryList().get(CategoryLevel.CHILD.getLevel()).getId());
+			form.setGrandChildCategoryId(item.getCategoryList().get(CategoryLevel.GRAND_CHILD.getLevel()).getId());
+			if (item.getBrand() != null) {
+				form.setBrandId(item.getBrand().getId());
+				form.setBrandName(item.getBrand().getName());
 			}
 			form.setCondition(item.getCondition());
 			form.setDescription(item.getDescription());
 
 		}
-
 		// 親カテゴリの処理
 		List<Category> parentCategoryList = service.pickUpCategoryListByAncestorIdAndLevel(
 				NullValue.CATEGORY_ID.getValue(), CategoryLevel.PARENT.getLevel());
 		model.addAttribute("parentCategoryList", parentCategoryList);
 
 		if (form.getParentCategoryId() != null) {
-			List<Category> childCategoryList = service.pickUpCategoryListByAncestorIdAndLevel(form.getParentCategoryId(),
-					CategoryLevel.CHILD.getLevel());
+			List<Category> childCategoryList = service
+					.pickUpCategoryListByAncestorIdAndLevel(form.getParentCategoryId(), CategoryLevel.CHILD.getLevel());
 			model.addAttribute("childCategoryList", childCategoryList);
 		}
 		if (form.getChildCategoryId() != null) {
-			List<Category> grandChildCategoryList = service.pickUpCategoryListByAncestorIdAndLevel(form.getChildCategoryId(),
-					CategoryLevel.GRAND_CHILD.getLevel());
+			List<Category> grandChildCategoryList = service.pickUpCategoryListByAncestorIdAndLevel(
+					form.getChildCategoryId(), CategoryLevel.GRAND_CHILD.getLevel());
 			model.addAttribute("grandChildCategoryList", grandChildCategoryList);
 		}
 
