@@ -34,8 +34,8 @@ public class RakusItemsApiService {
 
 	public List<Category> pickUpSubordinateCategoryList(int CategoryId) {
 		List<Category> subordinateCategoryList = categoriesMapper.pickUpSubordinateCategoryList(CategoryId);
-		//孫カテゴリを取得の際はこれで終わり
-		if(subordinateCategoryList.get(0).getLevel() == CategoryLevel.GRAND_CHILD.getLevel()) {
+		// 孫カテゴリを取得の際はこれで終わり
+		if (subordinateCategoryList.get(0).getLevel() == CategoryLevel.GRAND_CHILD.getLevel()) {
 			return subordinateCategoryList;
 		}
 		for (int i = 0; i < subordinateCategoryList.size(); i++) {
@@ -46,9 +46,19 @@ public class RakusItemsApiService {
 		}
 		return subordinateCategoryList;
 	}
-	
-	public List<Brand> pickUpBrandListByBrandName(String brandName){
+
+	public List<Brand> pickUpBrandListByBrandName(String brandName) {
 		brandName = "%" + brandName + "%";
 		return brandsMapper.findByName(brandName);
+	}
+
+	/**
+	 * ブランド名の重複を確認
+	 * 
+	 * @param brand ブラウザから受け取ったブランド名
+	 * @return 重複があればtrue,重複がなければfalse
+	 */
+	public boolean brandNameExistsInDb(String brandName) {
+		return brandsMapper.isExists(brandName);
 	}
 }
