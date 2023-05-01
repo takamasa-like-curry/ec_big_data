@@ -191,7 +191,7 @@ $(function () {
         btn.type = "button";
         btn.className = "btn btn-default";
         btn.id = "delete-brand-btn";
-        btn.textContent = "選択したカテゴリを削除";
+        btn.textContent = "ブランドを削除";
         deleteBtnArea.appendChild(btn);
       }
     }

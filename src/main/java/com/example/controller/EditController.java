@@ -32,32 +32,35 @@ public class EditController {
 		Item item = service.load(itemId);
 
 		if (!br.hasErrors()) {
+			form.setId(itemId);
 			form.setInputName(item.getName());
 			form.setPrice(String.valueOf(item.getPrice()));
-			form.setParentCategoryId(itemId);
-			form.setChildCategoryId(itemId);
-			form.setGrandChildCategoryId(itemId);
-			if(item.getBrand() != null) {
-				form.setBrand(item.getBrand().getName());
+
+			form.setParentCategoryId(item.getCategoryList().get(CategoryLevel.PARENT.getLevel()).getId());
+			form.setChildCategoryId(item.getCategoryList().get(CategoryLevel.CHILD.getLevel()).getId());
+			form.setGrandChildCategoryId(item.getCategoryList().get(CategoryLevel.GRAND_CHILD.getLevel()).getId());
+
+			if (item.getBrand() != null) {
+				form.setBrandId(item.getBrand().getId());
+				form.setBrandName(item.getBrand().getName());
 			}
 			form.setCondition(item.getCondition());
 			form.setDescription(item.getDescription());
 
 		}
-
 		// 親カテゴリの処理
 		List<Category> parentCategoryList = service.pickUpCategoryListByAncestorIdAndLevel(
 				NullValue.CATEGORY_ID.getValue(), CategoryLevel.PARENT.getLevel());
 		model.addAttribute("parentCategoryList", parentCategoryList);
 
 		if (form.getParentCategoryId() != null) {
-			List<Category> childCategoryList = service.pickUpCategoryListByAncestorIdAndLevel(form.getParentCategoryId(),
-					CategoryLevel.CHILD.getLevel());
+			List<Category> childCategoryList = service
+					.pickUpCategoryListByAncestorIdAndLevel(form.getParentCategoryId(), CategoryLevel.CHILD.getLevel());
 			model.addAttribute("childCategoryList", childCategoryList);
 		}
 		if (form.getChildCategoryId() != null) {
-			List<Category> grandChildCategoryList = service.pickUpCategoryListByAncestorIdAndLevel(form.getChildCategoryId(),
-					CategoryLevel.GRAND_CHILD.getLevel());
+			List<Category> grandChildCategoryList = service.pickUpCategoryListByAncestorIdAndLevel(
+					form.getChildCategoryId(), CategoryLevel.GRAND_CHILD.getLevel());
 			model.addAttribute("grandChildCategoryList", grandChildCategoryList);
 		}
 
@@ -65,16 +68,7 @@ public class EditController {
 	}
 
 	@PostMapping("/update")
-	public String insert(Model model, @Validated ItemForm form, BindingResult br, Integer itemId) {
-
-		// カテゴリの入力値チェック
-		if (form.getParentCategoryId() == NullValue.CATEGORY_ID.getValue()) {
-			br.rejectValue("parentId", null, "選択必須項目です");
-		} else if (form.getChildCategoryId() == NullValue.CATEGORY_ID.getValue()) {
-			br.rejectValue("parentId", null, "選択必須項目です(子カテゴリ、孫カテゴリも選択必須)");
-		} else if (form.getGrandChildCategoryId() == NullValue.CATEGORY_ID.getValue()) {
-			br.rejectValue("parentId", null, "選択必須項目です(孫カテゴリも選択必須)");
-		}
+	public String insert(Model model, @Validated ItemForm form, BindingResult br) {
 
 		// 金額のチェック
 		if (!("".equals(form.getPrice()))) {
@@ -87,10 +81,10 @@ public class EditController {
 
 		// エラーがあれば入力画面に遷移
 		if (br.hasErrors()) {
-			return showEditPage(model, form, itemId, br);
+			return showEditPage(model, form, form.getId(), br);
 		}
 
-		service.upDateItem(form, itemId); // updateに書き換え
+		service.upDateItem(form); // updateに書き換え
 
 		return "redirect:/";
 	}

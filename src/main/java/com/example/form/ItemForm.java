@@ -8,6 +8,8 @@ import lombok.Data;
 @Data
 public class ItemForm {
 
+	/** 商品ID */
+	private Integer id;
 	/** 商品名 */
 	@NotBlank(message = "入力必須項目です")
 	@Size(max = 255, message = "最大255文字までです。")

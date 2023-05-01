@@ -1,0 +1,168 @@
+@charset "utf-8";
+
+.modal {
+  width: 65%;
+  height: 80%;
+  max-height: 600px;
+  /* border: 1px solid #000; */
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: antiquewhite;
+  border-radius: 10px;
+  overflow-y: auto;
+  display: none;
+}
+
+.modal.open {
+  display: block;
+}
+
+.select-brand-title {
+  width: 100%;
+  font-size: 20px;
+  text-align: center;
+  padding-top: 20px;
+}
+
+.cen {
+  width: 100%;
+  text-align: center;
+}
+
+.brand-list {
+  font-size: 18px;
+  justify-content: center;
+  border: 1px solid #000;
+  height: 30px;
+  margin-bottom: 2px;
+  background-color: aliceblue;
+  transition: all 0.1s;
+}
+.brand-list:hover {
+  background-color: rgb(200, 191, 178);
+  font-size: 20px;
+  /* justify-content: center; */
+  /* padding: auto; */
+}
+.brand-list.checked {
+  background-color: rgb(212, 168, 108);
+  font-size: 20px;
+  /* justify-content: center; */
+  /* padding: auto; */
+}
+ul {
+  list-style-type: none;
+  padding-left: 0px;
+}
+
+i {
+  margin-right: 5px;
+  margin-left: 10px;
+}
+
+.top-5 {
+  margin-top: 5px;
+  display: flex;
+  justify-content: center;
+}
+
+.select-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 15px;
+  min-height: 400px;
+}
+
+#select-brand-area {
+  text-align: center;
+  padding: 15px;
+  width: 50%;
+  height: 300px;
+  /* min-height: 100px; */
+  background-color: rgba(195, 190, 190, 0.5);
+  overflow-y: auto;
+  font-size: 18px;
+}
+
+b {
+  font-size: 18px;
+}
+
+#close {
+  margin-bottom: 30px;
+}
+
+input[type="radio"].input-radio-brand {
+  display: none;
+}
+
+#select-brand-message {
+  font-size: 18px;
+  margin: 10px;
+}
+
+#select-brand-area::-webkit-scrollbar {
+  width: 10px;
+}
+#select-brand-area::-webkit-scrollbar-track {
+  background-color: #ccc;
+}
+#select-brand-area::-webkit-scrollbar-thumb {
+  background-color: #17585d;
+}
+
+.selected-brand-area {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+label {
+  width: 100%;
+  height: 100%;
+  margin-bottom: 0px;
+  margin-left: 0px;
+}
+
+.brand-list.not-select {
+  margin-bottom: 10px;
+}
+
+.overlay {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: grey;
+  opacity: 0.6;
+  z-index: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: none;
+}
+
+.overlay.open {
+  display: block;
+}
+
+#open {
+  font-size: 18px;
+  color: #17585d;
+  cursor: pointer;
+  padding-top: 7px;
+}
+
+#open:hover {
+  font-size: 20px;
+}
+
+#brand-name {
+  font-size: 16px;
+  margin-top: 5px;
+}
+
+#delete-brand-btn {
+  margin-top: 10px;
+}
