@@ -2,7 +2,7 @@ package com.example.form;
 
 import java.util.List;
 
-import com.example.common.CategoryLevel;
+import com.example.common.CategoryInfo;
 import com.example.domain.Category;
 
 import lombok.Data;
@@ -35,15 +35,17 @@ public class SerchItemsForm {
 		this.brandId = brandId;
 		this.brandName = brandName;
 	}
-
+	
+	
+	
 	private SerchItemsForm(List<Category> categoryList) {
 		for (Category category : categoryList) {
 			Integer level = category.getLevel();
-			if (level == CategoryLevel.PARENT.getLevel()) {
+			if (level == CategoryInfo.TOP_CATEGORY.getLevel()) {
 				this.parentCategoryId = category.getId();
-			} else if (level == CategoryLevel.CHILD.getLevel()) {
+			} else if (level == CategoryInfo.SUB_CATEGORY_1.getLevel()) {
 				this.childCategoryId = category.getId();
-			} else if (level == CategoryLevel.GRAND_CHILD.getLevel()) {
+			} else if (level == CategoryInfo.SUB_CATEGORY_2.getLevel()) {
 				this.grandChildCategoryId = category.getId();
 			} else {
 				// エラー処理
