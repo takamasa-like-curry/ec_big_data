@@ -5,16 +5,16 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-import com.example.domain.FilterOfShowItems;
 import com.example.domain.Item;
+import com.example.filter.ItemFilter;
 
 @Mapper
 public interface ItemsMapper {
 
 
-	List<Item> findByFilter(@Param("filter") FilterOfShowItems filter);
+	List<Item> findByFilter(@Param("filter") ItemFilter filter);
 
-	int countTotalQuantity(@Param("filter") FilterOfShowItems filter);
+	int countTotalQuantity(@Param("filter") ItemFilter filter);
 
 	/**
 	 * 商品追加.
