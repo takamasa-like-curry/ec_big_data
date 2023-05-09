@@ -259,7 +259,7 @@
 		deleted = FALSE
 		AND
 		level >=
-		${@com.example.common.CategoryLevel@GRAND_CHILD.level}
+		${@com.example.common.CategoryInfo@SUB_CATEGORY_2.level}
 		AND
 		EXISTS (
 		SELECT 1
