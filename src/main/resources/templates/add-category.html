@@ -210,6 +210,23 @@
           <!-- 新規カテゴリ入力終了 -->
           <!-- カテゴリ新規入力終了 -->
         </div>
+        <div class="form-group description-area">
+          <label for="description" class="col-sm-2 control-label"
+            >カテゴリの概要</label
+          >
+          <div class="col-sm-8">
+            <textarea
+              class="form-control"
+              name="description"
+              th:field="*{description}"
+              id="description"
+              rows="5"
+            ></textarea>
+            <span class="text-danger" th:errors="*{description}"
+              >入力エラーメッセージ</span
+            >
+          </div>
+        </div>
 
         <!-- submit button -->
         <div class="form-group">
