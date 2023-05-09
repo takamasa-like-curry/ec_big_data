@@ -6,13 +6,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.common.CategoryInfo;
+import com.example.common.NullValue;
+import com.example.common.pageInfo;
 import com.example.domain.Category;
-import com.example.domain.FilterOfShowItems;
 import com.example.domain.Item;
+import com.example.filter.ItemFilter;
 import com.example.mapper.BrandsMapper;
 import com.example.mapper.CategoriesMapper;
 import com.example.mapper.ItemsMapper;
 
+/**
+ * 商品一覧ページの業務処理を行うクラス.
+ * 
+ * @author sugaharatakamasa
+ *
+ */
 @Service
 @Transactional
 public class ShowListService {
@@ -25,37 +34,67 @@ public class ShowListService {
 	private BrandsMapper brandsMapper;
 
 	/**
-	 * 指定階層のカテゴリリストを取得.
-	 * 
-	 * 主に、検索カテゴリ選択フォームの表示に使用
-	 * 
-	 * @param level カテゴリの階層
-	 * @return 該当階層のカテゴリリスト
+	 * トップカテゴリのカテゴリリストを取得.
+	 *
+	 * @return トップカテゴリのリスト.
 	 */
+	public List<Category> getTopCategoryList() {
+		return categoriesMapper.findByAncestorIdAndLevel(NullValue.CATEGORY_ID.getValue(),
+				CategoryInfo.TOP_CATEGORY.getLevel());
+	}
 
-	public List<Category> pickUpCategoryListByDescendantId(Integer descendantId) {
-		List<Category> categoryList = categoriesMapper.findByDescendantId(descendantId);
+	/**
+	 * 自身を含む先祖カテゴリのリストを取得.
+	 * 
+	 * @param categoryId カテゴリID
+	 * @return
+	 */
+	public List<Category> getAncestorCategoryListWithSelf(Integer categoryId) {
+		List<Category> categoryList = categoriesMapper.findByDescendantId(categoryId);
 		return categoryList;
 	}
 
-	public List<Category> pickUpCategoryListByAncestorIdAndLevel(Integer ancestorId, Integer level) {
-		List<Category> categoryList = categoriesMapper.findByAncestorIdAndLevel(ancestorId, level);
-		return categoryList;
+	/**
+	 * 指定されたカテゴリを親に持つ、1つ下の階層のカテゴリリストを取得.
+	 * 
+	 * @param categoryId カテゴリID
+	 * @param level
+	 * @return
+	 */
+	public List<Category> getSubordinateCategoryList(Integer categoryId) {
+		return categoriesMapper.findSubordinateCategoryList(categoryId);
 	}
 
-	public int countTotaQuantitylByFilter(FilterOfShowItems filter) {
-
-		return itemsMapper.countTotalQuantity(filter);
+	/**
+	 * 該当商品を表示するのに必要な総ページ数を取得.
+	 * 
+	 * @param filter 検索条件フィルター
+	 * @return 該当商品を表示するのに必要な総ページ数
+	 */
+	public int getTotalPagesByFilter(ItemFilter filter) {
+		return itemsMapper.countTotalQuantity(filter) / pageInfo.PAGE_SIZE.getValue() + 1;
 	}
 
-	public List<Item> PickUpItemListByFilter(FilterOfShowItems filter) {
+	/**
+	 * 商品リストを取得.
+	 * 
+	 * @param filter 商品検索フィルター
+	 * @return 該当商品のリスト
+	 */
+	public List<Item> getItemListByFilter(ItemFilter filter) {
 
 		List<Item> itemList = itemsMapper.findByFilter(filter);
 		itemList = createCategoryList(itemList);
 		return itemList;
 	}
-	
-	public String pickUpBrandNameByBrandId(int BrandId) {
+
+	/**
+	 * ブランドIDより、ブランド名を取得.
+	 * 
+	 * @param BrandId ブランドID
+	 * @return 対応するブランド名
+	 */
+	public String getBrandNameByBrandId(int BrandId) {
 		return brandsMapper.pickUpNameById(BrandId);
 	}
 

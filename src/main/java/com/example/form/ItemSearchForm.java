@@ -8,45 +8,43 @@ import com.example.domain.Category;
 import lombok.Data;
 
 @Data
-public class SerchItemsForm {
+public class ItemSearchForm {
 
 	/** 商品名 */
 	private String name;
 	/** 親カテゴリID */
-	private Integer parentCategoryId;
+	private Integer topCategoryId;
 	/** 子カテゴリID */
-	private Integer childCategoryId;
+	private Integer subCategory1Id;
 	/** 孫カテゴリID */
-	private Integer grandChildCategoryId;
+	private Integer subCategory2Id;
 	/** ブランド名 */
 	private String brandName;
 	/** ブランドID */
 	private Integer brandId;
 
-	public SerchItemsForm() {
+	public ItemSearchForm() {
 
 	};
 
-	private SerchItemsForm(Integer brandId) {
+	private ItemSearchForm(Integer brandId) {
 		this.brandId = brandId;
 	}
 
-	private SerchItemsForm(Integer brandId, String brandName) {
+	private ItemSearchForm(Integer brandId, String brandName) {
 		this.brandId = brandId;
 		this.brandName = brandName;
 	}
-	
-	
-	
-	private SerchItemsForm(List<Category> categoryList) {
+
+	private ItemSearchForm(List<Category> categoryList) {
 		for (Category category : categoryList) {
 			Integer level = category.getLevel();
 			if (level == CategoryInfo.TOP_CATEGORY.getLevel()) {
-				this.parentCategoryId = category.getId();
+				this.topCategoryId = category.getId();
 			} else if (level == CategoryInfo.SUB_CATEGORY_1.getLevel()) {
-				this.childCategoryId = category.getId();
+				this.subCategory1Id = category.getId();
 			} else if (level == CategoryInfo.SUB_CATEGORY_2.getLevel()) {
-				this.grandChildCategoryId = category.getId();
+				this.subCategory2Id = category.getId();
 			} else {
 				// エラー処理
 			}
@@ -54,18 +52,18 @@ public class SerchItemsForm {
 		}
 	}
 
-	public static SerchItemsForm createFormByBrandId(Integer brandId) {
-		return new SerchItemsForm(brandId);
+	public static ItemSearchForm createFormByBrandId(Integer brandId) {
+		return new ItemSearchForm(brandId);
 
 	}
 
-	public static SerchItemsForm createFormByBrandIdAndBrandName(Integer brandId, String name) {
-		return new SerchItemsForm(brandId, name);
+	public static ItemSearchForm createFormByBrandIdAndBrandName(Integer brandId, String name) {
+		return new ItemSearchForm(brandId, name);
 
 	}
 
-	public static SerchItemsForm createFormByCategoryList(List<Category> categoryList) {
-		return new SerchItemsForm(categoryList);
+	public static ItemSearchForm createFormByCategoryList(List<Category> categoryList) {
+		return new ItemSearchForm(categoryList);
 
 	}
 

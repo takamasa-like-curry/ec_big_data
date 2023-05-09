@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.example.domain.Category;
-import com.example.domain.FilterOfCategory;
+import com.example.filter.FilterOfCategory;
 import com.example.form.CategoryEditForm;
 
 @Mapper
@@ -56,8 +56,6 @@ public interface CategoriesMapper {
 	List<Category> findSubordinateCategoryList(int id);
 
 	int pickUpLevelById(int id);
-
-	int pickUpLatestCategoryId();
 
 	void insert(@Param("category") Category category);
 

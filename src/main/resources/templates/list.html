@@ -99,23 +99,23 @@
               id="name"
               placeholder="item name"
               name="name"
-              th:value="${session.form.name}"
+              th:value="${session.itemSearchForm.name}"
             />
           </div>
           <div class="form-group"><i class="fa fa-plus"></i></div>
           <div class="form-group" id="category-id">
             <!-- 親カテゴリ -->
             <select
-              class="form-control"
+              class="form-control select-category"
               id="parent-category-id"
-              name="parentCategoryId"
+              name="topCategoryId"
             >
-              <option value="">- parentCategory -</option>
+              <option value="">- topCategory -</option>
               <option
-                th:each="parentCategory : ${parentCategoryList}"
-                th:text="${parentCategory.name}"
-                th:value="${parentCategory.id}"
-                th:selected="${session.form.parentCategoryId} == ${parentCategory.id}"
+                th:each="topCategory : ${topCategoryList}"
+                th:text="${topCategory.name}"
+                th:value="${topCategory.id}"
+                th:selected="${session.itemSearchForm.topCategoryId} == ${topCategory.id}"
               >
                 親カテゴリ名
               </option>
@@ -123,18 +123,18 @@
             <!-- 子カテゴリ -->
             <span id="child-category">
               <select
-                th:if="${session.form.parentCategoryId}"
-                class="form-control"
+                th:if="${session.itemSearchForm.topCategoryId}"
+                class="form-control select-category"
                 id="child-category-id"
-                name="childCategoryId"
+                name="subCategory1Id"
               >
-                <option value="">- childCategory -</option>
+                <option value="">- subCategory1 -</option>
                 <option
-                  th:if="${childCategoryList}"
-                  th:each="childCategory : ${childCategoryList}"
-                  th:text="${childCategory.name}"
-                  th:value="${childCategory.id}"
-                  th:selected="${session.form.childCategoryId} == ${childCategory.id}"
+                  th:if="${subCategory1List}"
+                  th:each="subCategory1 : ${subCategory1List}"
+                  th:text="${subCategory1.name}"
+                  th:value="${subCategory1.id}"
+                  th:selected="${session.itemSearchForm.subCategory1Id} == ${subCategory1.id}"
                 >
                   子カテゴリ名
                 </option>
@@ -143,18 +143,18 @@
             <!-- 孫カテゴリ -->
             <span id="grand-child-category">
               <select
-                th:if="${session.form.childCategoryId}"
-                class="form-control"
+                th:if="${session.itemSearchForm.subCategory1Id}"
+                class="form-control select-category"
                 id="grand-child-category-id"
-                name="grandChildCategoryId"
+                name="subCategory2Id"
               >
                 <option value="">- grandChild -</option>
                 <option
-                  th:if="${grandChildCategoryList}"
-                  th:each="grandChildCategory : ${grandChildCategoryList}"
-                  th:text="${grandChildCategory.name}"
-                  th:value="${grandChildCategory.id}"
-                  th:selected="${session.form.grandChildCategoryId} == ${grandChildCategory.id}"
+                  th:if="${subCateogry2List}"
+                  th:each="subCategory2 : ${subCategory2List}"
+                  th:text="${subCategory2.name}"
+                  th:value="${subCategory2.id}"
+                  th:selected="${session.itemSearchForm.subCategory2Id} == ${subCategory2.id}"
                 >
                   孫カテゴリ名
                 </option>
@@ -169,7 +169,7 @@
               class="form-control"
               placeholder="brand"
               name="brandName"
-              th:value="${session.form.brandName}"
+              th:value="${session.itemSearchForm.brandName}"
             />
           </div>
           <div class="form-group"></div>
@@ -183,13 +183,13 @@
       <div class="pages">
         <nav class="page-nav">
           <ul class="pager">
-            <li class="previous" th:if="${session.page} > 1">
-              <a th:href="@{'/prev-next?page=' + ${session.page - 1}}"
+            <li class="previous" th:if="${session.pageNumber} > 1">
+              <a th:href="@{'/page?page=' + ${session.pageNumber - 1}}"
                 >&larr; prev</a
               >
             </li>
-            <li class="next" th:if="${session.page} < ${totalPage}">
-              <a th:href="@{'/prev-next?page=' + ${session.page + 1}}"
+            <li class="next" th:if="${session.pageNumber} < ${totalPages}">
+              <a th:href="@{'/page?page=' + ${session.pageNumber + 1}}"
                 >next &rarr;</a
               >
             </li>
@@ -254,13 +254,13 @@
       <div class="pages">
         <nav class="page-nav">
           <ul class="pager">
-            <li class="previous" th:if="${session.page} > 1">
-              <a th:href="@{'/prev-next?page=' + ${session.page - 1}}"
+            <li class="previous" th:if="${session.pageNumber} > 1">
+              <a th:href="@{'/page?page=' + ${session.pageNumber - 1}}"
                 >&larr; prev</a
               >
             </li>
-            <li class="next" th:if="${session.page} < ${totalPage}">
-              <a th:href="@{'/prev-next?page=' + ${session.page + 1}}"
+            <li class="next" th:if="${session.pageNumber} < ${totalPages}">
+              <a th:href="@{'/page?page=' + ${session.pageNumber + 1}}"
                 >next &rarr;</a
               >
             </li>
@@ -269,7 +269,7 @@
       </div>
       <!-- ページ番号を指定して表示するフォーム -->
       <div id="select-page">
-        <form class="form-inline" th:action="@{/jump}">
+        <form class="form-inline" th:action="@{/page}">
           <div class="form-group">
             <div class="input-group col-xs-6">
               <label></label>
@@ -278,14 +278,13 @@
                 type="text"
                 name="page"
                 class="form-control"
-                th:value="${session.page}"
+                th:value="${session.pageNumber}"
               />
               <!-- 総ページ数 -->
-              <input type="hidden" name="totalPage" th:value="${totalPage}" />
               <div
                 id="total-page"
                 class="input-group-addon"
-                th:text="${totalPage}"
+                th:text="${totalPages}"
               >
                 / ページ総数
               </div>
@@ -305,6 +304,5 @@
       crossorigin="anonymous"
     ></script>
     <script th:src="@{/js/list.js}"></script>
-    <script th:src="@{/js/view.js}"></script>
   </body>
 </html>

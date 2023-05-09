@@ -10,7 +10,7 @@ import com.example.common.CategoryInfo;
 import com.example.common.NullValue;
 import com.example.common.pageInfo;
 import com.example.domain.Category;
-import com.example.domain.FilterOfCategory;
+import com.example.filter.FilterOfCategory;
 import com.example.mapper.CategoriesMapper;
 
 @Service
@@ -19,6 +19,11 @@ public class ShowCategoryListService {
 
 	@Autowired
 	private CategoriesMapper categoriesMapper;
+
+	public List<Category> getTopCategoryList() {
+		return categoriesMapper.findByAncestorIdAndLevel(NullValue.CATEGORY_ID.getValue(),
+				CategoryInfo.TOP_CATEGORY.getLevel());
+	}
 
 	public List<Category> pickUpCategoryListByFilter(FilterOfCategory filter) {
 
@@ -43,10 +48,6 @@ public class ShowCategoryListService {
 		return categoriesMapper.findMaxLevel();
 	}
 
-	public List<Category> getTopCategoryList() {
-		return categoriesMapper.findByAncestorIdAndLevel(NullValue.CATEGORY_ID.getValue(),
-				CategoryInfo.TOP_CATEGORY.getLevel());
-	}
 
 	public List<Category> getSubordinateCategoryList(int categoryId) {
 		return categoriesMapper.findSubordinateCategoryList(categoryId);
