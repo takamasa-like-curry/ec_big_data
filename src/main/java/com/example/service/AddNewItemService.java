@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.common.CategoryLevel;
+import com.example.common.CategoryInfo;
 import com.example.common.NullValue;
 import com.example.domain.Brand;
 import com.example.domain.Category;
@@ -54,13 +54,13 @@ public class AddNewItemService {
 
 	public List<Category> pickUpParentCategoryList() {
 		List<Category> parentCategoryList = categoriesMapper.findByAncestorIdAndLevel(NullValue.CATEGORY_ID.getValue(),
-				CategoryLevel.PARENT.getLevel());
+				CategoryInfo.TOP_CATEGORY.getLevel());
 		parentCategoryList = removeIncompleteCategory(parentCategoryList);
 		return parentCategoryList;
 	}
 
 	public List<Category> pickUpSubordinateCategoryList(int CategoryId) {
-		List<Category> subordinateCategoryList = categoriesMapper.pickUpSubordinateCategoryList(CategoryId);
+		List<Category> subordinateCategoryList = categoriesMapper.findSubordinateCategoryList(CategoryId);
 		subordinateCategoryList = removeIncompleteCategory(subordinateCategoryList);
 		return subordinateCategoryList;
 	}
