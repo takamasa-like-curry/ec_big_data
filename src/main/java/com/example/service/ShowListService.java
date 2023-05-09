@@ -6,9 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.common.CategoryInfo;
+import com.example.common.NullValue;
+import com.example.common.pageInfo;
 import com.example.domain.Category;
-import com.example.domain.FilterOfShowItems;
 import com.example.domain.Item;
+import com.example.filter.ItemFilter;
 import com.example.mapper.BrandsMapper;
 import com.example.mapper.CategoriesMapper;
 import com.example.mapper.ItemsMapper;
@@ -43,18 +46,23 @@ public class ShowListService {
 		return categoryList;
 	}
 
-	public int countTotaQuantitylByFilter(FilterOfShowItems filter) {
-
-		return itemsMapper.countTotalQuantity(filter);
+	public List<Category> getTopCategoryList() {
+		return categoriesMapper.findByAncestorIdAndLevel(NullValue.CATEGORY_ID.getValue(),
+				CategoryInfo.TOP_CATEGORY.getLevel());
 	}
 
-	public List<Item> PickUpItemListByFilter(FilterOfShowItems filter) {
+	public int getTotalPagesByFilter(ItemFilter filter) {
+
+		return itemsMapper.countTotalQuantity(filter) / pageInfo.PAGE_SIZE.getValue() + 1;
+	}
+
+	public List<Item> getCategoryListByFilter(ItemFilter filter) {
 
 		List<Item> itemList = itemsMapper.findByFilter(filter);
 		itemList = createCategoryList(itemList);
 		return itemList;
 	}
-	
+
 	public String pickUpBrandNameByBrandId(int BrandId) {
 		return brandsMapper.pickUpNameById(BrandId);
 	}
