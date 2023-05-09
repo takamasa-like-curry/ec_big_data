@@ -88,12 +88,12 @@ public class AddNewCategoryService {
 		category.setName(form.getCategoryName());
 		Integer parentCategoryId = pickUpParentCategoryIdByForm(form);
 		category.setLevel(pickUpAddCategoryLevel(parentCategoryId));
-		category.setDescription(form.getCategoryName() + "の説明");
+		category.setDescription(form.getDescription());
 
 		// categoriesテーブルにインサート
 		categoriesMapper.insert(category);
 		return category.getId();
-		
+
 	}
 
 	private void insertCategoryTreePaths(AddCategoryForm form, int addCategoryId) {
