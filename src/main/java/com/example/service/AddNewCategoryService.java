@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.common.CategoryLevel;
+import com.example.common.CategoryInfo;
 import com.example.common.TentativeValue;
 import com.example.domain.Category;
 import com.example.form.AddCategoryForm;
@@ -75,7 +75,7 @@ public class AddNewCategoryService {
 	private int pickUpAddCategoryLevel(Integer parentCategoryId) {
 		int level;
 		if (parentCategoryId == null) {
-			level = CategoryLevel.PARENT.getLevel();
+			level = CategoryInfo.TOP_CATEGORY.getLevel();
 		} else {
 			level = categoriesMapper.pickUpLevelById(parentCategoryId);
 			level++;
