@@ -1,4 +1,4 @@
-package com.example.domain;
+package com.example.filter;
 
 import com.example.common.NullValue;
 import com.example.common.pageInfo;
