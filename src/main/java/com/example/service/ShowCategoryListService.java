@@ -20,6 +20,11 @@ public class ShowCategoryListService {
 	@Autowired
 	private CategoriesMapper categoriesMapper;
 
+	public List<Category> getTopCategoryList() {
+		return categoriesMapper.findByAncestorIdAndLevel(NullValue.CATEGORY_ID.getValue(),
+				CategoryInfo.TOP_CATEGORY.getLevel());
+	}
+
 	public List<Category> pickUpCategoryListByFilter(FilterOfCategory filter) {
 
 		List<Category> categoryList = categoriesMapper.findByFilter(filter);
@@ -43,10 +48,6 @@ public class ShowCategoryListService {
 		return categoriesMapper.findMaxLevel();
 	}
 
-	public List<Category> getTopCategoryList() {
-		return categoriesMapper.findByAncestorIdAndLevel(NullValue.CATEGORY_ID.getValue(),
-				CategoryInfo.TOP_CATEGORY.getLevel());
-	}
 
 	public List<Category> getSubordinateCategoryList(int categoryId) {
 		return categoriesMapper.findSubordinateCategoryList(categoryId);

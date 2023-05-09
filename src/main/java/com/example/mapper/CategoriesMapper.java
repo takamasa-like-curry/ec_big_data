@@ -57,8 +57,6 @@ public interface CategoriesMapper {
 
 	int pickUpLevelById(int id);
 
-	int pickUpLatestCategoryId();
-
 	void insert(@Param("category") Category category);
 
 	/**

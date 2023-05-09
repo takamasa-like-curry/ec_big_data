@@ -8,7 +8,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.example.common.CategoryInfo;
 import com.example.common.pageInfo;
 import com.example.domain.Category;
 import com.example.domain.Item;
@@ -62,7 +61,7 @@ public class ShowListController {
 
 		filter.setPage(pageNumber);
 
-		List<Item> itemlist = service.getCategoryListByFilter(filter);
+		List<Item> itemlist = service.getItemListByFilter(filter);
 
 		model.addAttribute("itemList", itemlist);
 
@@ -72,13 +71,11 @@ public class ShowListController {
 
 		// 子カテゴリ・孫カテゴリの処理
 		if (form.getTopCategoryId() != null) {
-			List<Category> subCategory1List = service.pickUpCategoryListByAncestorIdAndLevel(form.getTopCategoryId(),
-					CategoryInfo.SUB_CATEGORY_1.getLevel());
+			List<Category> subCategory1List = service.getSubordinateCategoryList(form.getTopCategoryId());
 			model.addAttribute("subCategory1List", subCategory1List);
 		}
 		if (form.getSubCategory2Id() != null) {
-			List<Category> subCategory2List = service.pickUpCategoryListByAncestorIdAndLevel(form.getSubCategory1Id(),
-					CategoryInfo.SUB_CATEGORY_2.getLevel());
+			List<Category> subCategory2List = service.getSubordinateCategoryList(form.getSubCategory1Id());
 			model.addAttribute("subCategory2List", subCategory2List);
 		}
 
@@ -94,14 +91,14 @@ public class ShowListController {
 
 	@GetMapping("/category")
 	public String serchByCategory(Model model, Integer categoryId) {
-		List<Category> categoryList = service.pickUpCategoryListByDescendantId(categoryId);
+		List<Category> categoryList = service.getAncestorCategoryListWithSelf(categoryId);
 
 		return showList(model, ItemSearchForm.createFormByCategoryList(categoryList), null);
 	}
 
 	@GetMapping("/brand")
 	public String serchByBrand(Model model, Integer brandId) {
-		String brandName = service.pickUpBrandNameByBrandId(brandId);
+		String brandName = service.getBrandNameByBrandId(brandId);
 		return showList(model, ItemSearchForm.createFormByBrandIdAndBrandName(brandId, brandName), null);
 	}
 
