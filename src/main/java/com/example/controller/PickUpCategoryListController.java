@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.common.CategoryLevel;
+import com.example.common.CategoryInfo;
 import com.example.domain.Category;
 import com.example.service.PickUpCategoryMapService;
 
@@ -25,7 +25,7 @@ public class PickUpCategoryListController {
 
 		Map<String, List<Category>> map = new HashMap<>();
 		List<Category> categoryList = service.pickUpCategoryListByAncestorIdAndLevel(parentId,
-				CategoryLevel.CHILD.getLevel());
+				CategoryInfo.SUB_CATEGORY_1.getLevel());
 		map.put("childCategoryList", categoryList);
 		return map;
 
@@ -36,7 +36,7 @@ public class PickUpCategoryListController {
 
 		Map<String, List<Category>> map = new HashMap<>();
 		List<Category> categoryList = service.pickUpCategoryListByAncestorIdAndLevel(childId,
-				CategoryLevel.GRAND_CHILD.getLevel());
+				CategoryInfo.SUB_CATEGORY_2.getLevel());
 		map.put("grandChildCategoryList", categoryList);
 		return map;
 
