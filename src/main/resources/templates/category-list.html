@@ -23,6 +23,7 @@
       crossorigin="anonymous"
     />
     <link rel="stylesheet" th:href="@{/css/mercari.css}" />
+    <link rel="stylesheet" th:href="@{/css/category-list.css}" />
     <title>Rakus Items</title>
   </head>
   <body>
@@ -62,45 +63,116 @@
     <div id="main" class="container-fluid">
       <!-- 検索フォーム -->
       <div id="forms">
-        <form action="" class="form-inline" role="form">
+        <form
+          th:action="@{/category-list}"
+          class="form-inline"
+          role="form"
+          th:object="${categorySearchForm}"
+        >
           <div class="form-group">
             <input
-              type="input"
+              type="text"
               class="form-control"
               id="name"
-              placeholder="item name"
+              name="name"
+              placeholder="カテゴリ名"
+              th:value="${session.categorySearchForm.name}"
             />
           </div>
           <div class="form-group"><i class="fa fa-plus"></i></div>
           <div class="form-group">
-            <select class="form-control">
-              <option>- parentCategory -</option>
-              <option>parentCategory1</option>
-              <option>parentCategory2</option>
-              <option>parentCategory3</option>
-              <option>parentCategory4</option>
-              <option>parentCategory5</option>
+            <input
+              type="hidden"
+              id="top-category-name"
+              name="topCategoryName"
+              th:value="${session.categorySearchForm.topCategoryName} ? ${session.categorySearchForm.topCategoryName} : ''"
+            />
+            <select
+              class="form-control select-category"
+              name="topCategoryId"
+              id="top-category-id"
+            >
+              <option value="">- トップカテゴリ -</option>
+              <option
+                th:each="category : ${topCategoryList}"
+                th:value="${category.id}"
+                th:text="${category.name}"
+                th:attr="selected=${session.categorySearchForm.topCategoryId} == ${category.id}"
+              >
+                親カテゴリ名
+              </option>
             </select>
-            <select class="form-control">
-              <option>- childCategory -</option>
-              <option>childCategory1</option>
-              <option>childCategory2</option>
-              <option>childCategory3</option>
-              <option>childCategory4</option>
-              <option>childCategory5</option>
-            </select>
-            <select class="form-control">
-              <option>- grandChild -</option>
-              <option>grandChild1</option>
-              <option>grandChild2</option>
-              <option>grandChild3</option>
-              <option>grandChild4</option>
-              <option>grandChild5</option>
-            </select>
+            <!-- 第２カテゴリ -->
+            <span id="select-sub-category-1-area">
+              <input
+                type="hidden"
+                id="sub-category-1-name"
+                name="subCategory1Name"
+                th:value="${session.categorySearchForm.subCategory1Name}? ${session.categorySearchForm.subCategory1Name} : ''"
+              />
+              <select
+                th:unless="${#lists.isEmpty(subCategory1List)}"
+                class="form-control select-category"
+                name="subCategory1Id"
+                id="sub-category-1-id"
+              >
+                <option
+                  value=""
+                  th:text="'- ' + ${topCategoryName} + 'のサブカテゴリ -'"
+                ></option>
+
+                <option
+                  th:each="category : ${subCategory1List}"
+                  th:value="${category.id}"
+                  th:text="${category.name}"
+                  th:attr="selected=${session.categorySearchForm.subCategory1Id} == ${category.id}"
+                >
+                  子カテゴリ名
+                </option>
+              </select>
+            </span>
+            <!-- 第３カテゴリ -->
+            <span id="select-sub-category-2-area">
+              <select
+                th:unless="${#lists.isEmpty(subCategory2List)}"
+                class="form-control"
+                name="subCategory2Id"
+                id="sub-category-2-id"
+              >
+                <option
+                  value=""
+                  th:text="'- ' + ${subCategory1Name} + 'のサブカテゴリ -'"
+                >
+                  - 孫カテゴリ -
+                </option>
+                <option
+                  th:each="category : ${subCategory2List}"
+                  th:value="${category.id}"
+                  th:text="${category.name}"
+                  th:attr="selected=${session.categorySearchForm.subCategory2Id} == ${category.id}"
+                >
+                  孫カテゴリ名
+                </option>
+              </select>
+            </span>
           </div>
           <div class="form-group"><i class="fa fa-plus"></i></div>
           <div class="form-group">
-            <input type="text" class="form-control" placeholder="brand" />
+            <select
+              class="form-control"
+              name="level"
+              th:value="${session.categorySearchForm.level}"
+            >
+              <option class="default-value" value="">- カテゴリ階層 -</option>
+              <div th:each="i: ${#numbers.sequence(0, maxLevel)}">
+                <option
+                  th:value="${i}"
+                  th:text="${i}"
+                  th:attr="selected=${session.categorySearchForm.level} == ${i}"
+                ></option>
+              </div>
+            </select>
+            <!-- <input type="text" class="form-control" placeholder="brand" /> -->
           </div>
           <div class="form-group"></div>
           <button type="submit" class="btn btn-default">
@@ -113,8 +185,18 @@
       <div class="pages">
         <nav class="page-nav">
           <ul class="pager">
-            <li class="previous"><a href="#">&larr; prev</a></li>
-            <li class="next"><a href="#">next &rarr;</a></li>
+            <li th:if="${session.pageNumber > 1}" class="previous">
+              <a
+                th:href="@{/category-list/page?page=} + ${session.pageNumber - 1}"
+                >&larr; prev</a
+              >
+            </li>
+            <li th:if="${session.pageNumber < session.totalPages}" class="next">
+              <a
+                th:href="@{/category-list/page?page=} + ${session.pageNumber + 1}"
+                >next &rarr;</a
+              >
+            </li>
           </ul>
         </nav>
       </div>
@@ -125,25 +207,34 @@
           <thead>
             <tr>
               <th>name</th>
-              <th>price</th>
-              <th>category</th>
-              <th>brand</th>
-              <th>cond</th>
+              <th>level</th>
+              <th>ancestorCategories</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td class="item-name">
-                <a href="./detail.html">Razer BlackWidow Chroma Keyboard</a>
+            <tr th:each="category : ${categoryList}">
+              <td class="cateogry-name">
+                <a
+                  th:href="@{'/category-detail?categoryId=' + ${category.id} }"
+                  th:text="${category.name}"
+                  >カテゴリ名</a
+                >
               </td>
-              <td class="item-price">52.0</td>
-              <td class="item-category">
-                <a href="">Electronics</a> /
-                <a href="">Computers &amp; Tablets</a> /
-                <a href="">Components &amp; Parts</a>
+              <td class="catgeory-level" th:text="${category.level}">
+                カテゴリの階層
               </td>
-              <td class="item-brand"><a href="">Razer</a></td>
-              <td class="item-condition">3</td>
+              <td class="ancestor-categories">
+                <span
+                  th:each="ancestorCategory,status : ${category.ancestorCategoryList}"
+                >
+                  <a
+                    th:href="@{'/category-list/category?categoryId=' + ${ancestorCategory.id}}"
+                    th:text="${ancestorCategory.name}"
+                    >先祖カテゴリ名</a
+                  >
+                  <span th:unless="${status.last}"> / </span>
+                </span>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -153,8 +244,18 @@
       <div class="pages">
         <nav class="page-nav">
           <ul class="pager">
-            <li class="previous"><a href="#">&larr; prev</a></li>
-            <li class="next"><a href="#">next &rarr;</a></li>
+            <li th:if="${session.pageNumber > 1}" class="previous">
+              <a
+                th:href="@{/category-list/page?page=} + ${session.pageNumber - 1}"
+                >&larr; prev</a
+              >
+            </li>
+            <li th:if="${session.pageNumber < session.totalPages}" class="next">
+              <a
+                th:href="@{/category-list/page?page=} + ${session.pageNumber + 1}"
+                >next &rarr;</a
+              >
+            </li>
           </ul>
         </nav>
         <!-- ページ番号を指定して表示するフォーム -->
@@ -163,9 +264,18 @@
             <div class="form-group">
               <div class="input-group col-xs-6">
                 <label></label>
-                <input type="text" class="form-control" />
+                <input
+                  type="text"
+                  class="form-control"
+                  th:value="${session.pageNumber}"
+                />
                 <!-- 総ページ数 -->
-                <div class="input-group-addon">/ 20</div>
+                <div
+                  class="input-group-addon"
+                  th:text="${'/ ' + session.totalPages}"
+                >
+                  / 総ページ数
+                </div>
               </div>
               <div class="input-group col-xs-1">
                 <button type="submit" class="btn btn-default">Go</button>
@@ -182,7 +292,7 @@
       integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
       crossorigin="anonymous"
     ></script>
-    <script th:src="@{/js/list.js}"></script>
+    <script th:src="@{/js/categoryList.js}"></script>
     <script th:src="@{/js/view.js}"></script>
   </body>
 </html>
