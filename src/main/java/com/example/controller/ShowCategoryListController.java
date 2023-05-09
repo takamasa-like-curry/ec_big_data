@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.example.common.NullValue;
 import com.example.common.pageInfo;
 import com.example.domain.Category;
-import com.example.domain.FilterOfCategory;
+import com.example.filter.FilterOfCategory;
 import com.example.form.CategorySearchForm;
 import com.example.service.ShowCategoryListService;
 

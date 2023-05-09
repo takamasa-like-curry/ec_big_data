@@ -10,7 +10,7 @@ import com.example.common.CategoryInfo;
 import com.example.common.NullValue;
 import com.example.common.pageInfo;
 import com.example.domain.Category;
-import com.example.domain.FilterOfCategory;
+import com.example.filter.FilterOfCategory;
 import com.example.mapper.CategoriesMapper;
 
 @Service
