@@ -1,11 +1,6 @@
 "use strict";
 
 $(function () {
-  // if ($("#child-id").val() == -1) {
-  //   $("#grand-child-id").hide();
-  //   $("#input-child-category").hide();
-  // }
-
   const thisPage = $("#this-page").val();
   const totalPage = $("#total-page").text();
   if (totalPage == 1) {

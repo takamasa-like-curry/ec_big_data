@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.example.common.CategoryLevel;
+import com.example.common.CategoryInfo;
 import com.example.common.NullValue;
 import com.example.common.TentativeValue;
 import com.example.domain.Category;
@@ -35,7 +35,7 @@ public class AddNewCategoryController {
 	 * カテゴリ追加ページを表示.
 	 * 
 	 * @param model モデル
-	 * @param form フォーム
+	 * @param form  フォーム
 	 * @return カテゴリ追加ページ
 	 */
 	@GetMapping("")
@@ -43,14 +43,14 @@ public class AddNewCategoryController {
 
 		// 親カテゴリリストの取得
 		List<Category> parentCategoryList = service.pickUpCategoryListByAncestorIdAndLevel(
-				NullValue.CATEGORY_ID.getValue(), CategoryLevel.PARENT.getLevel());
+				NullValue.CATEGORY_ID.getValue(), CategoryInfo.TOP_CATEGORY.getLevel());
 		model.addAttribute("parentCategoryList", parentCategoryList);
 
-		//子カテゴリリストの取得
+		// 子カテゴリリストの取得
 		if (form.getParentCategoryId() != null && form.getParentCategoryId() != TentativeValue.CATEGORY_ID.getValue()) {
-			
-			List<Category> childCategoryList = service
-					.pickUpCategoryListByAncestorIdAndLevel(form.getParentCategoryId(), CategoryLevel.CHILD.getLevel());
+
+			List<Category> childCategoryList = service.pickUpCategoryListByAncestorIdAndLevel(
+					form.getParentCategoryId(), CategoryInfo.SUB_CATEGORY_1.getLevel());
 			model.addAttribute("childCategoryList", childCategoryList);
 		}
 		model.addAttribute("tentativeCategoryId", TentativeValue.CATEGORY_ID.getValue());
@@ -61,8 +61,8 @@ public class AddNewCategoryController {
 	/**
 	 * 新規カテゴリを追加.
 	 * 
-	 * @param model モデル
-	 * @param form フォーム
+	 * @param model  モデル
+	 * @param form   フォーム
 	 * @param result リザルト
 	 * @return 入力値チェックに問題なし：商品一覧画面、問題あり：カテゴリ追加画面
 	 */

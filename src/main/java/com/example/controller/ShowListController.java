@@ -8,10 +8,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.example.common.CategoryLevel;
+import com.example.common.CategoryInfo;
 import com.example.common.NullValue;
 import com.example.common.Page;
-import com.example.common.PasingConstants;
+import com.example.common.pageInfo;
 import com.example.domain.Brand;
 import com.example.domain.Category;
 import com.example.domain.FilterOfShowItems;
@@ -62,7 +62,7 @@ public class ShowListController {
 		int total = service.countTotaQuantitylByFilter(filter);
 
 		// 総ページ数
-		int totalPage = total / PasingConstants.SIZE.getPage(); // 途中
+		int totalPage = total / pageInfo.PAGE_SIZE.getValue(); // 途中
 		model.addAttribute("totalPage", ++totalPage);
 
 		List<Item> itemlist = service.PickUpItemListByFilter(filter);
@@ -71,18 +71,18 @@ public class ShowListController {
 
 		// 親カテゴリの処理
 		List<Category> parentCategoryList = service.pickUpCategoryListByAncestorIdAndLevel(
-				NullValue.CATEGORY_ID.getValue(), CategoryLevel.PARENT.getLevel());
+				NullValue.CATEGORY_ID.getValue(), CategoryInfo.TOP_CATEGORY.getLevel());
 		model.addAttribute("parentCategoryList", parentCategoryList);
 
 		// 子カテゴリ・孫カテゴリの処理
 		if (form.getParentCategoryId() != null) {
-			List<Category> childCategoryList = service
-					.pickUpCategoryListByAncestorIdAndLevel(form.getParentCategoryId(), CategoryLevel.CHILD.getLevel());
+			List<Category> childCategoryList = service.pickUpCategoryListByAncestorIdAndLevel(
+					form.getParentCategoryId(), CategoryInfo.SUB_CATEGORY_1.getLevel());
 			model.addAttribute("childCategoryList", childCategoryList);
 		}
 		if (form.getChildCategoryId() != null) {
 			List<Category> grandChildCategoryList = service.pickUpCategoryListByAncestorIdAndLevel(
-					form.getChildCategoryId(), CategoryLevel.GRAND_CHILD.getLevel());
+					form.getChildCategoryId(), CategoryInfo.SUB_CATEGORY_2.getLevel());
 			model.addAttribute("grandChildCategoryList", grandChildCategoryList);
 		}
 

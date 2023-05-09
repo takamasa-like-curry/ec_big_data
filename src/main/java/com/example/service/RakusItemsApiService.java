@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.common.CategoryLevel;
+import com.example.common.CategoryInfo;
 import com.example.domain.Brand;
 import com.example.domain.Category;
 import com.example.mapper.BrandsMapper;
@@ -24,7 +24,7 @@ public class RakusItemsApiService {
 	public Boolean checkCategoryNameDuplication(String categoryName, Integer ancestorId) {
 		int level;
 		if (ancestorId == null) {
-			level = CategoryLevel.PARENT.getLevel();
+			level = CategoryInfo.TOP_CATEGORY.getLevel();
 		} else {
 			level = categoriesMapper.pickUpLevelById(ancestorId);
 			level++;
@@ -32,10 +32,16 @@ public class RakusItemsApiService {
 		return categoriesMapper.checkCategoryNameDuplication(categoryName, ancestorId, level);
 	}
 
-	public List<Category> pickUpSubordinateCategoryList(int CategoryId) {
-		List<Category> subordinateCategoryList = categoriesMapper.pickUpSubordinateCategoryList(CategoryId);
+	/**
+	 * 2階層下には要素を持たない1階層下のカテゴリリストを取得.
+	 * 
+	 * @param CategoryId 親となるカテゴリID
+	 * @return 該当カテゴリリスト
+	 */
+	public List<Category> getSubordinateBranchCategoryList(int CategoryId) {
+		List<Category> subordinateCategoryList = categoriesMapper.findSubordinateCategoryList(CategoryId);
 		// 孫カテゴリを取得の際はこれで終わり
-		if (subordinateCategoryList.get(0).getLevel() == CategoryLevel.GRAND_CHILD.getLevel()) {
+		if (subordinateCategoryList.get(0).getLevel() == CategoryInfo.SUB_CATEGORY_2.getLevel()) {
 			return subordinateCategoryList;
 		}
 		for (int i = 0; i < subordinateCategoryList.size(); i++) {
@@ -44,6 +50,17 @@ public class RakusItemsApiService {
 				i--;
 			}
 		}
+		return subordinateCategoryList;
+	}
+
+	/**
+	 * 一つ下の階層のカテゴリリストを取得.
+	 * 
+	 * @param CategoryId 親となるカテゴリID
+	 * @return 該当カテゴリリスト
+	 */
+	public List<Category> getSubordinateCategoryList(int CategoryId) {
+		List<Category> subordinateCategoryList = categoriesMapper.findSubordinateCategoryList(CategoryId);
 		return subordinateCategoryList;
 	}
 

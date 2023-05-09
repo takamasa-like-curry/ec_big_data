@@ -1,5 +1,7 @@
 package com.example.domain;
 
+import java.util.List;
+
 import lombok.Data;
 
 /**
@@ -15,9 +17,11 @@ public class Category {
 	private int id;
 	/** カテゴリ名 */
 	private String name;
-	/**カテゴリ概要*/
+	/** カテゴリ概要 */
 	private String description;
 	/** カテゴリ階層 */
 	private int level;
+	/** 先祖カテゴリマップ */
+	private List<Category> ancestorCategoryList;
 
 }

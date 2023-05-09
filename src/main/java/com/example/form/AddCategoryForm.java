@@ -1,6 +1,5 @@
 package com.example.form;
 
-
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -23,10 +22,13 @@ public class AddCategoryForm {
 	/** カテゴリ名 */
 	@NotBlank(message = "入力必須項目です")
 	private String categoryName;
+	/** カテゴリの概要 */
+	@NotBlank(message = "入力必須項目です")
+//	@Size(max=255,message="255文字以内で入力してください")
+	private String description;
 
 	public AddCategoryForm() {
-		
+
 	}
 
-	
 }

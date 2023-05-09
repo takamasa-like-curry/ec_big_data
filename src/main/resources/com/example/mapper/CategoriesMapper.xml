@@ -3,6 +3,79 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.mapper.CategoriesMapper">
+
+
+	<select id="findByFilter"
+		resultType="com.example.domain.Category" parameterType="map">
+		SELECT
+		id,name,description,level
+		FROM categories
+		WHERE
+		deleted = FALSE
+		<if test="filter.name != null">
+			AND
+			name ILIKE #{filter.name}
+		</if>
+		<if
+			test="filter.level != @com.example.common.NullValue@LEVEL.value">
+			AND
+			level = #{filter.level}
+		</if>
+		<if
+			test="filter.ancestorCategoryId != @com.example.common.NullValue@CATEGORY_ID.value">
+			AND
+			EXISTS (
+			SELECT 1
+			FROM category_tree_paths
+			WHERE
+			categories.id =
+			category_tree_paths.descendant_id
+			AND
+			ancestor_id =
+			#{filter.ancestorCategoryId}
+			)
+		</if>
+		ORDER BY level,name
+		LIMIT 30
+		OFFSET
+		#{filter.offset}
+	</select>
+
+	<select id="countQuantiryByFilter" resultType="int"
+		parameterType="map">
+		SELECT COUNT(*)
+		FROM categories
+		WHERE
+		deleted = FALSE
+		<if test="filter.name != null">
+			AND
+			name ILIKE #{filter.name}
+		</if>
+		<if
+			test="filter.level != @com.example.common.NullValue@LEVEL.value">
+			AND
+			level = #{filter.level}
+		</if>
+		<if
+			test="filter.ancestorCategoryId != @com.example.common.NullValue@CATEGORY_ID.value">
+			AND
+			EXISTS (
+			SELECT 1
+			FROM category_tree_paths
+			WHERE
+			categories.id =
+			category_tree_paths.descendant_id
+			AND
+			ancestor_id =
+			#{filter.ancestorCategoryId}
+			)
+		</if>
+	</select>
+
+
+
+
+
 	<select id="findByLevel"
 		resultType="com.example.domain.Category">
 		SELECT
@@ -10,7 +83,10 @@
 		FROM
 		categories
 		WHERE
-		level = #{level}
+		deleted = FALSE
+		AND
+		level =
+		#{level}
 		ORDER BY
 		name
 	</select>
@@ -21,7 +97,10 @@
 		id,name,level
 		FROM categories
 		WHERE
-		level = #{level}
+		deleted = FALSE
+		AND
+		level =
+		#{level}
 		<if
 			test="ancestorId != @com.example.common.NullValue@CATEGORY_ID.value">
 			AND
@@ -39,14 +118,17 @@
 		ORDER BY
 		name
 	</select>
-	
+
 
 	<select id="findByDescendantId"
 		resultType="com.example.domain.Category">
 		SELECT
-		id,name,level
+		id,name,level,description
 		FROM categories
 		WHERE
+		deleted
+		= FALSE
+		AND
 		id IN (
 		SELECT
 		ancestor_id
@@ -58,28 +140,40 @@
 		ORDER BY
 		level
 	</select>
-	
-	<select id="pickUpSubordinateCategoryList"
+
+	<select id="findSubordinateCategoryList"
 		resultType="com.example.domain.Category">
 		SELECT
 		id,name,level
 		FROM categories
 		WHERE
+		deleted = FALSE
+		AND
 		EXISTS (
 		SELECT 1
 		FROM category_tree_paths
 		WHERE
-		categories.id = category_tree_paths.descendant_id
+		categories.id =
+		category_tree_paths.descendant_id
 		AND
 		ancestor_id = #{id}
 		)
 		AND
 		level = (
-			SELECT level + 1
-			FROM categories 
-			WHERE
-			id = #{id}
+		SELECT level + 1
+		FROM categories
+		WHERE
+		id = #{id}
 		)
+	</select>
+	<select id="load" resultType="com.example.domain.Category">
+		SELECT
+		id,name,level,description
+		FROM categories
+		WHERE
+		deleted = FALSE
+		AND
+		id = #{id}
 	</select>
 
 	<select id="checkCategoryNameDuplication" resultType="boolean">
@@ -90,7 +184,10 @@
 		FROM
 		categories
 		WHERE
-		level = #{level}
+		deleted = FALSE
+		AND
+		level =
+		#{level}
 		AND
 		name
 		ILIKE #{name}
@@ -102,7 +199,8 @@
 			categories.id =
 			category_tree_paths.descendant_id
 			AND
-			ancestor_id = #{ancestorId}
+			ancestor_id =
+			#{ancestorId}
 			)
 		</if>
 		) AS no_duplicate;
@@ -112,32 +210,68 @@
 		SELECT level
 		FROM
 		categories
-		WHERE id = #{id}
+		WHERE
+		deleted = FALSE
+		AND
+		id = #{id}
+	</select>
+
+	<select id="findMaxLevel" resultType="int">
+		SELECT MAX(level)
+		FROM
+		categories
+		WHERE
+		deleted = FALSE
 	</select>
 
 	<select id="pickUpLatestCategoryId" resultType="int">
 		SELECT max(id)
 		FROM categories
 	</select>
-	
+
+	<select id="findCategoryWithDescendants"
+		resultType="com.example.domain.Category">
+		SELECT
+		id,name,level,description
+		FROM categories
+		WHERE
+		deleted
+		= FALSE
+		AND
+		EXISTS (
+		SELECT 1
+		FROM
+		category_tree_paths
+		WHERE
+		categories.id =
+		category_tree_paths.descendant_id
+		AND
+		ancestor_id = #{categoryId}
+		)
+	</select>
+
 	<select id="existsDescendantCategory" resultType="boolean">
 		SELECT
 		EXISTS (
-			SELECT 1
-			FROM categories
-			WHERE
-			level >= ${@com.example.common.CategoryLevel@GRAND_CHILD.level}
-			AND
-			EXISTS (
-				SELECT 1
-				FROM category_tree_paths
-				WHERE
-				categories.id = category_tree_paths.descendant_id
-			AND 
-			ancestor_id = #{id}
-			)
+		SELECT 1
+		FROM categories
+		WHERE
+		deleted = FALSE
+		AND
+		level >=
+		${@com.example.common.CategoryInfo@SUB_CATEGORY_2.level}
+		AND
+		EXISTS (
+		SELECT 1
+		FROM category_tree_paths
+		WHERE
+		categories.id =
+		category_tree_paths.descendant_id
+		AND
+		ancestor_id = #{id}
 		)
-	</select> 
+		)
+	</select>
 
 	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
 		INSERT
@@ -147,6 +281,28 @@
 		(#{category.name},#{category.description},#{category.level},now(),'登録者ユーザーID',now(),'登録者ユーザーID')
 
 	</insert>
+
+	<update id="logicalDelete">
+		UPDATE categories
+		SET
+		updated_date_time = now()
+		,updated_name = '論理削除ユーザー(現段階では、mapperに直接記述しています。)'
+		,deleted = true
+		WHERE
+		id = #{categoryId}
+	</update>
+
+	<update id="update" parameterType="map">
+		UPDATE categories
+		SET
+		name =
+		#{form.name}
+		,description = #{form.description}
+		WHERE
+		id = #{form.id}
+	</update>
+
+
 
 
 </mapper>

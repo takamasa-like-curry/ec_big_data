@@ -27,15 +27,25 @@ public class RakusItemsApiController {
 		return ResponseEntity.ok(result);
 	}
 
-	@GetMapping("/pick-up-subordinate-category-list")
-	public Map<String, List<Category>> pickUpSubordinateCategoryList(Integer categoryId) {
+	@GetMapping("/get-subordinate-branch-category-list")
+	public Map<String, List<Category>> getSubordinateBranchCategoryList(Integer categoryId) {
 
 		Map<String, List<Category>> map = new HashMap<>();
 		if (categoryId != null) {
-			map.put("categoryList", service.pickUpSubordinateCategoryList(categoryId));
+			map.put("categoryList", service.getSubordinateBranchCategoryList(categoryId));
 		}
 		return map;
 
+	}
+	@GetMapping("/get-subordinate-category-list")
+	public Map<String, List<Category>> getSubordinateCategoryList(Integer categoryId) {
+		
+		Map<String, List<Category>> map = new HashMap<>();
+		if (categoryId != null) {
+			map.put("categoryList", service.getSubordinateCategoryList(categoryId));
+		}
+		return map;
+		
 	}
 
 	@GetMapping("pick-up-brand-list")

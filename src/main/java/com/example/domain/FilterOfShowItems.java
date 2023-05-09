@@ -1,6 +1,6 @@
 package com.example.domain;
 
-import com.example.common.PasingConstants;
+import com.example.common.pageInfo;
 
 import lombok.Data;
 
@@ -39,7 +39,7 @@ public final class FilterOfShowItems {
 
 	public void setPage(int page) {
 		this.page = page;
-		this.offset = PasingConstants.SIZE.getPage() * --page;
+		this.offset = pageInfo.PAGE_SIZE.getValue() * --page;
 	}
 	public void setName(String name) {
 		if(name != null) {
