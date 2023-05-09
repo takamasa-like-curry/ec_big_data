@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.example.common.NullValue;
 import com.example.common.pageInfo;
 import com.example.domain.Category;
 import com.example.domain.FilterOfCategory;
@@ -27,9 +28,6 @@ public class ShowCategoryListController {
 
 	@GetMapping("")
 	public String showCategoryListPage(Model model, CategorySearchForm form, Integer PageNumberInteger) {
-		System.out.println("=================================");
-		System.out.println(form);
-		System.out.println("=================================");
 		session.setAttribute("categorySearchForm", form);
 
 		FilterOfCategory filter = FilterOfCategory.createFilterByForm(form);
@@ -63,19 +61,21 @@ public class ShowCategoryListController {
 	}
 
 	@GetMapping("/page")
-	public String page(Model model, Integer page) {
+	public String page(Model model, String page) {
 		CategorySearchForm form = (CategorySearchForm) session.getAttribute("categorySearchForm");
-		return showCategoryListPage(model, form, page);
+		Integer pageNumberInteger = pageConvert(page);
+		return showCategoryListPage(model, form, pageNumberInteger);
 	}
 
 	@GetMapping("/back")
 	public String back(Model model) {
-		return showCategoryListPage(model, (CategorySearchForm)session.getAttribute("categorySearchForm"), (Integer)session.getAttribute("pageNumber"));
+		return showCategoryListPage(model, (CategorySearchForm) session.getAttribute("categorySearchForm"),
+				(Integer) session.getAttribute("pageNumber"));
 
 	}
-	
+
 	@GetMapping("/category")
-	public String category(Model model,int categoryId) {
+	public String category(Model model, int categoryId) {
 		List<Category> categoryList = service.getAncestorCategoryListByCategoryId(categoryId);
 		return showCategoryListPage(model, CategorySearchForm.createFormByCategoryList(categoryList), null);
 	}
@@ -87,4 +87,13 @@ public class ShowCategoryListController {
 		return pageNumber.intValue();
 	}
 
+	private Integer pageConvert(String page) {
+		Integer pageInteger;
+		try {
+			pageInteger = Integer.valueOf(page);
+		} catch (Exception e) {
+			pageInteger = NullValue.CATEGORY_ID.getValue();
+		}
+		return pageInteger;
+	}
 }
