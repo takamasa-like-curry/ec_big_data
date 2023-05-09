@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.example.common.CategoryLevel;
+import com.example.common.CategoryInfo;
 import com.example.common.NullValue;
 import com.example.domain.Category;
 import com.example.domain.Item;
@@ -36,9 +36,9 @@ public class EditController {
 			form.setInputName(item.getName());
 			form.setPrice(String.valueOf(item.getPrice()));
 
-			form.setParentCategoryId(item.getCategoryList().get(CategoryLevel.PARENT.getLevel()).getId());
-			form.setChildCategoryId(item.getCategoryList().get(CategoryLevel.CHILD.getLevel()).getId());
-			form.setGrandChildCategoryId(item.getCategoryList().get(CategoryLevel.GRAND_CHILD.getLevel()).getId());
+			form.setParentCategoryId(item.getCategoryList().get(CategoryInfo.TOP_CATEGORY.getLevel()).getId());
+			form.setChildCategoryId(item.getCategoryList().get(CategoryInfo.SUB_CATEGORY_1.getLevel()).getId());
+			form.setGrandChildCategoryId(item.getCategoryList().get(CategoryInfo.SUB_CATEGORY_2.getLevel()).getId());
 
 			if (item.getBrand() != null) {
 				form.setBrandId(item.getBrand().getId());
@@ -50,17 +50,17 @@ public class EditController {
 		}
 		// 親カテゴリの処理
 		List<Category> parentCategoryList = service.pickUpCategoryListByAncestorIdAndLevel(
-				NullValue.CATEGORY_ID.getValue(), CategoryLevel.PARENT.getLevel());
+				NullValue.CATEGORY_ID.getValue(), CategoryInfo.TOP_CATEGORY.getLevel());
 		model.addAttribute("parentCategoryList", parentCategoryList);
 
 		if (form.getParentCategoryId() != null) {
 			List<Category> childCategoryList = service
-					.pickUpCategoryListByAncestorIdAndLevel(form.getParentCategoryId(), CategoryLevel.CHILD.getLevel());
+					.pickUpCategoryListByAncestorIdAndLevel(form.getParentCategoryId(), CategoryInfo.SUB_CATEGORY_1.getLevel());
 			model.addAttribute("childCategoryList", childCategoryList);
 		}
 		if (form.getChildCategoryId() != null) {
 			List<Category> grandChildCategoryList = service.pickUpCategoryListByAncestorIdAndLevel(
-					form.getChildCategoryId(), CategoryLevel.GRAND_CHILD.getLevel());
+					form.getChildCategoryId(), CategoryInfo.SUB_CATEGORY_2.getLevel());
 			model.addAttribute("grandChildCategoryList", grandChildCategoryList);
 		}
 
