@@ -17,7 +17,7 @@ $(function () {
     }
 
     $.ajax({
-      url: "http://localhost:8080/big_data/api/pick-up-subordinate-category-list",
+      url: "http://localhost:8080/big_data/api/get-subordinate-branch-category-list",
       type: "GET",
       dataType: "JSON",
       data: {
@@ -89,7 +89,7 @@ $(function () {
     }
 
     $.ajax({
-      url: "http://localhost:8080/big_data/api/pick-up-subordinate-category-list",
+      url: "http://localhost:8080/big_data/api/get-subordinate-branch-category-list",
       type: "GET",
       dataType: "JSON",
       data: {
