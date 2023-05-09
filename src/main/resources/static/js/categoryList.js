@@ -4,8 +4,6 @@ $(function () {
   $(document).on("change", ".select-category", function () {
     const parentCategoryId = $(this).val();
 
-    console.log(parentCategoryId);
-
     let parentCategoryName = "";
     if (parentCategoryId != false) {
       parentCategoryName = $(this).find("option:selected").text();
