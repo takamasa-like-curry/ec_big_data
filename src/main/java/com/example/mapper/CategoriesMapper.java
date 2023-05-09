@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Param;
 
 import com.example.domain.Category;
 import com.example.domain.FilterOfCategory;
+import com.example.form.CategoryEditForm;
 
 @Mapper
 public interface CategoriesMapper {
@@ -77,12 +78,19 @@ public interface CategoriesMapper {
 	 * @return 該当カテゴリとそのカテゴリの子孫カテゴリのリスト
 	 */
 	List<Category> findCategoryWithDescendants(int categoryId);
-	
+
 	/**
 	 * カテゴリの論理削除.
 	 * 
 	 * @param categoryId カテゴリID
 	 */
 	void logicalDelete(int categoryId);
+
+	/**
+	 * カテゴリ情報の更新.
+	 * 
+	 * @param category 更新情報の入ったカテゴリ
+	 */
+	void update(@Param("form") CategoryEditForm form);
 
 }

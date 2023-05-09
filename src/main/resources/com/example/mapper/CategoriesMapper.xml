@@ -292,6 +292,16 @@
 		id = #{categoryId}
 	</update>
 
+	<update id="update" parameterType="map">
+		UPDATE categories
+		SET
+		name =
+		#{form.name}
+		,description = #{form.description}
+		WHERE
+		id = #{form.id}
+	</update>
+
 
 
 
