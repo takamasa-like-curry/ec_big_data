@@ -19,7 +19,7 @@ public class ShowDetailController {
 	@GetMapping("")
 	public String showDetail(Model model, int itemId) {
 
-		Item item = service.showDetail(itemId);
+		Item item = service.getItemByItemId(itemId);
 
 		model.addAttribute("item", item);
 
